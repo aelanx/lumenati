@@ -1,7 +1,6 @@
 ﻿using System;
-using System.IO;
-using System.Text;
 using System.Collections.Generic;
+using OpenTK;
 
 namespace Lumenati
 {
@@ -445,7 +444,6 @@ namespace Lumenati
             public int characterId;
             public int unk1;
             public int placeholderTextId;
-            public string placeholder; // FIXME
             public int unk2;
             public int colorId;
             public int unk3;
@@ -868,68 +866,11 @@ namespace Lumenati
             }
         }
 
-        public struct Transform
-        {
-            public float M11;
-            public float M12;
-            public float M21;
-            public float M22;
-            public float M31;
-            public float M32;
-
-            public Transform(float m11, float m12, float m21, float m22, float m31, float m32)
-            {
-                M11 = m11;
-                M12 = m12;
-                M21 = m21;
-                M22 = m22;
-                M31 = m31;
-                M32 = m32;
-            }
-
-            public Transform(float[] data)
-            {
-                M11 = data[0];
-                M12 = data[1];
-                M21 = data[2];
-                M22 = data[3];
-                M31 = data[4];
-                M32 = data[5];
-            }
-        }
-
-        public class Vector2
-        {
-            public float X;
-            public float Y;
-
-            public Vector2()
-            {
-            }
-
-            public Vector2(float x, float y)
-            {
-                X = x;
-                Y = y;
-            }
-
-            public override bool Equals(object obj)
-            {
-                var other = (Vector2)obj;
-                return (X == other.X && Y == other.Y);
-            }
-
-            public override int GetHashCode()
-            {
-                return ((int)X ^ (int)Y);
-            }
-        }
-
         public string Filename;
         public Header header = new Header();
         public List<string> Strings = new List<string>();
         public List<Color> Colors = new List<Color>();
-        public List<Transform> Transforms = new List<Transform>();
+        public List<Matrix3x2> Transforms = new List<Matrix3x2>();
         public List<Vector2> Positions = new List<Vector2>();
         public List<Rect> Bounds = new List<Rect>();
         public List<TextureAtlas> Atlases = new List<TextureAtlas>();
@@ -1005,7 +946,7 @@ namespace Lumenati
             return index;
         }
 
-        public int AddTransform(Lumen.Transform xform)
+        public int AddTransform(Matrix3x2 xform)
         {
             int index = -1;
 
@@ -1110,7 +1051,7 @@ namespace Lumenati
 
                         for (int i = 0; i < numTransforms; i++)
                         {
-                            Transforms.Add(new Transform(
+                            Transforms.Add(new Matrix3x2(
                                 f.readFloat(), f.readFloat(),
                                 f.readFloat(), f.readFloat(),
                                 f.readFloat(), f.readFloat()
