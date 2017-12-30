@@ -29,7 +29,6 @@ namespace Lumenati
         // mode shit
         public List<SelectedVertex> SelectedVerts = new List<SelectedVertex>();
         public EditorMode Mode = EditorMode.Vertex;
-        public float scale = 1.0f;
 
         // short term
         public Vector3 dragPosition = Vector3.Zero;

@@ -11,21 +11,65 @@ namespace Lumenati
     public partial class MainForm : Form
     {
         LumenEditor Editor = new LumenEditor();
-        
+
         bool swappingHack = false;
         bool panning = false;
         bool dragging = false;
         RectangleF selectionRect = new Rectangle();
         Vector3 mousePosition = Vector3.Zero;
-        Vector3 cameraTranslateVertex = Vector3.Zero;
-        Vector3 cameraTranslateUV = Vector3.Zero;
+
+        Vector3 _viewportPosVertex = Vector3.Zero;
+        Vector3 _viewportPosUV = Vector3.Zero;
+        float _cameraZoomVertex = 1;
+        float _cameraZoomUV = 1;
+
+        Vector3 ViewportPosition
+        {
+            get
+            {
+                if (Editor.Mode == EditorMode.Vertex)
+                    return _viewportPosVertex;
+                else if (Editor.Mode == EditorMode.UV)
+                    return _viewportPosUV;
+                else
+                    return Vector3.Zero;
+            }
+
+            set
+            {
+                if (Editor.Mode == EditorMode.Vertex)
+                    _viewportPosVertex = value;
+                else if (Editor.Mode == EditorMode.UV)
+                    _viewportPosUV = value;
+            }
+        }
+
+        float ViewportZoom
+        {
+            get
+            {
+                if (Editor.Mode == EditorMode.Vertex)
+                    return _cameraZoomVertex;
+                else if (Editor.Mode == EditorMode.UV)
+                    return _cameraZoomUV;
+                else
+                    return 1;
+            }
+
+            set
+            {
+                if (Editor.Mode == EditorMode.Vertex)
+                    _cameraZoomVertex = value;
+                else if (Editor.Mode == EditorMode.UV)
+                    _cameraZoomUV = value;
+            }
+        }
 
         bool ShiftHeld = false;
 
         Lumen.Sprite SelectedSprite = null;
         Lumen.Shape SelectedShape = null;
         List<Lumen.Graphic> SelectedGraphics = new List<Lumen.Graphic>();
-        //Lumen.Graphic SelectedGraphic = null;
 
         public MainForm()
         {
@@ -61,12 +105,8 @@ namespace Lumenati
             GL.PushMatrix();
             GL.LoadIdentity();
 
-            if (Editor.Mode == EditorMode.UV)
-                GL.Translate(cameraTranslateUV);
-            else if (Editor.Mode == EditorMode.Vertex)
-                GL.Translate(cameraTranslateVertex);
-
-            GL.Scale(Editor.scale, Editor.scale, 0);
+            GL.Translate(ViewportPosition);
+            GL.Scale(ViewportZoom, ViewportZoom, 0);
 
             if (SelectedShape != null)
             {
@@ -152,7 +192,8 @@ namespace Lumenati
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            cameraTranslateVertex = new Vector3(glControl.DisplayRectangle.Width * Editor.scale / 2, glControl.DisplayRectangle.Height / 2, 0);
+            // FIXME: this is a really stupid way of doing this.
+            _viewportPosVertex = new Vector3(glControl.DisplayRectangle.Width * ViewportZoom / 2, glControl.DisplayRectangle.Height / 2, 0);
 
             Application.Idle += Application_Idle;
         }
@@ -228,9 +269,9 @@ namespace Lumenati
         {
             const float minScale = 0.01f;
 
-            Editor.scale += e.Delta / 1500.0f;
-            if (Editor.scale < minScale)
-                Editor.scale = minScale;
+            ViewportZoom += e.Delta / 1500.0f;
+            if (ViewportZoom < minScale)
+                ViewportZoom = minScale;
         }
 
         private void glControl_MouseDown(object sender, MouseEventArgs e)
@@ -241,14 +282,8 @@ namespace Lumenati
             if (e.Button == MouseButtons.Right)
                 panning = true;
 
-            Vector3 cameraTranslate = Vector3.Zero;
-            if (Editor.Mode == EditorMode.Vertex)
-                cameraTranslate = cameraTranslateVertex;
-            else if (Editor.Mode == EditorMode.UV)
-                cameraTranslate = cameraTranslateUV;
-
-            var mouseX = (e.X - cameraTranslate.X) / Editor.scale;
-            var mouseY = (e.Y - cameraTranslate.Y) / Editor.scale;
+            var mouseX = (e.X - ViewportPosition.X) / ViewportZoom;
+            var mouseY = (e.Y - ViewportPosition.Y) / ViewportZoom;
             selectionRect.X = mouseX;
             selectionRect.Y = mouseY;
 
@@ -266,7 +301,7 @@ namespace Lumenati
                         for (int vertId = 0; vertId < graphic.Verts.Length; vertId++)
                         {
                             const int squareSize = 8;
-                            var halfSize = squareSize / 2 /*/ Editor.scale*/;
+                            var halfSize = squareSize / 2 /*/ ViewportZoom*/;
                             var vert = graphic.Verts[vertId];
 
                             if (
@@ -292,7 +327,7 @@ namespace Lumenati
                     for (int vertId = 0; vertId < graphic.Verts.Length; vertId++)
                     {
                         const int squareSize = 8;
-                        var halfSize = squareSize / 2 / Editor.scale;
+                        var halfSize = squareSize / 2/* / ViewportZoom*/;
                         var vert = graphic.Verts[vertId];
                         var x = vert.U * Editor.lm.Atlases[graphic.AtlasId].width;
                         var y = vert.V * Editor.lm.Atlases[graphic.AtlasId].height;
@@ -329,14 +364,8 @@ namespace Lumenati
                 // Was box selecting?
                 if (Editor.SelectedVerts.Count == 0)
                 {
-                    Vector3 cameraTranslate = Vector3.Zero;
-                    if (Editor.Mode == EditorMode.Vertex)
-                        cameraTranslate = cameraTranslateVertex;
-                    else if (Editor.Mode == EditorMode.UV)
-                        cameraTranslate = cameraTranslateUV;
-
-                    var mouseX = (e.X - cameraTranslate.X) / Editor.scale;
-                    var mouseY = (e.Y - cameraTranslate.Y) / Editor.scale;
+                    var mouseX = (e.X - ViewportPosition.X) / ViewportZoom;
+                    var mouseY = (e.Y - ViewportPosition.Y) / ViewportZoom;
 
                     selectionRect = new RectangleF(
                         Math.Min(selectionRect.X, mouseX),
@@ -369,7 +398,7 @@ namespace Lumenati
         RectangleF getVertSelectionRect(Lumen.Vertex vert, Lumen.Graphic graphic)
         {
             const int squareSize = 8;
-            var halfSize = squareSize / 2 / Editor.scale;
+            var halfSize = squareSize / 2 / ViewportZoom;
 
             if (Editor.Mode == EditorMode.Vertex)
                 return new RectangleF(vert.X - halfSize, vert.Y - halfSize, squareSize, squareSize);
@@ -390,15 +419,11 @@ namespace Lumenati
 
             if (panning)
             {
-                var offset = (delta * Editor.scale);
-                if (Editor.Mode == EditorMode.Vertex)
-                    cameraTranslateVertex += offset;
-                else if (Editor.Mode == EditorMode.UV)
-                    cameraTranslateUV += offset;
+                ViewportPosition += (delta * ViewportZoom);
             }
 
             if (dragging)
-                Editor.dragPosition += (delta / Editor.scale);
+                Editor.dragPosition += (delta / ViewportZoom);
 
             mousePosition = newPosition;
         }
