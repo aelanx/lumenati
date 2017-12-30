@@ -142,8 +142,9 @@ namespace Lumenati
 
         private void glControl1_Load(object sender, EventArgs e)
         {
+#if DEBUG
             loadFile(@"C:\s4explore\workspace\content\patch\data\ui\lumen\main\main.lm");
-
+#endif
             glControl.MouseWheel += glControl_MouseWheel;
 
             GL.ClearColor(Color.Black);
