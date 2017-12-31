@@ -311,7 +311,7 @@ namespace Lumenati
                                 vert.Y + halfSize >= mouseY
                             )
                             {
-                                Editor.SelectedVerts.Add(new SelectedVertex() { graphic = graphic, vertId = vertId });
+                                selectVert(graphic, vertId);
                                 done = true;
                                 break;
                             }
@@ -339,7 +339,7 @@ namespace Lumenati
                             y + halfSize >= mouseY
                         )
                         {
-                            Editor.SelectedVerts.Add(new SelectedVertex() { graphic = graphic, vertId = vertId });
+                            selectVert(graphic, vertId);
                             break;
                         }
                     }
@@ -382,7 +382,7 @@ namespace Lumenati
                             var vertRect = getVertSelectionRect(graphic.Verts[vertId], graphic);
 
                             if (selectionRect.IntersectsWith(vertRect))
-                                Editor.SelectedVerts.Add(new SelectedVertex() { graphic = graphic, vertId = vertId });
+                                selectVert(graphic, vertId);
                         }
                     }
                 }
@@ -393,6 +393,18 @@ namespace Lumenati
 
                 Editor.dragPosition = Vector3.Zero;
             }
+        }
+
+        void selectVert(Lumen.Graphic graphic, int vertId)
+        {
+            // TODO: there must be a cleaner way of doing this.
+            foreach (var vert in Editor.SelectedVerts)
+            {
+                if (vert.graphic == graphic && vert.vertId == vertId)
+                    return;
+            }
+
+            Editor.SelectedVerts.Add(new SelectedVertex() { graphic = graphic, vertId = vertId });
         }
 
         RectangleF getVertSelectionRect(Lumen.Vertex vert, Lumen.Graphic graphic)
