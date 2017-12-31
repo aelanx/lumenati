@@ -101,6 +101,20 @@ namespace Lumenati
             GL.End();
         }
 
+        public void DrawShape(Lumen.Shape shape)
+        {
+            foreach (var graphic in shape.Graphics)
+            {
+                var atlas = GetAtlas(graphic.AtlasId);
+                if (atlas != null)
+                    GL.BindTexture(TextureTarget.Texture2D, atlas.glId);
+                else
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+
+                DrawGraphic(graphic, PrimitiveType.Triangles);
+            }
+        }
+
         public void DrawGraphic(Lumen.Graphic gfx, PrimitiveType primitiveType)
         {
             GL.Begin(primitiveType);

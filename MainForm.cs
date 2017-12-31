@@ -76,6 +76,19 @@ namespace Lumenati
             InitializeComponent();
         }
 
+        Lumen.Shape getShapeByCharacterId(int characterId)
+        {
+            // FIXME: need to use a displaylist. this is garbage
+
+            foreach (var shape in Editor.lm.Shapes)
+            {
+                if (shape.CharacterId == characterId)
+                    return shape;
+            }
+
+            return null;
+        }
+
         private void Application_Idle(object sender, EventArgs e)
         {
             if (!glControl.IsIdle)
@@ -108,23 +121,36 @@ namespace Lumenati
             GL.Translate(ViewportPosition);
             GL.Scale(ViewportZoom, ViewportZoom, 0);
 
-            if (SelectedShape != null)
+            if (SelectedSprite != null)
             {
-                foreach (var graphic in SelectedGraphics)
+                int frameId = 0;
+
+                foreach (var placement in SelectedSprite.Frames[frameId].Placements)
                 {
-                    Editor.DrawGraphicHandles(graphic);
+                    var shape = getShapeByCharacterId(placement.CharacterId);
+
+                    if (shape != null)
+                        Editor.DrawShape(shape);
                 }
             }
 
-            if (dragging && (Editor.SelectedVerts.Count == 0 || ShiftHeld))
-            {
-                GL.Begin(PrimitiveType.LineLoop);
-                GL.Vertex2(selectionRect.X, selectionRect.Y);
-                GL.Vertex2(selectionRect.X + Editor.dragPosition.X,  selectionRect.Y);
-                GL.Vertex2(selectionRect.X + Editor.dragPosition.X,  selectionRect.Y + Editor.dragPosition.Y);
-                GL.Vertex2(selectionRect.X,  selectionRect.Y + Editor.dragPosition.Y);
-                GL.End();
-            }
+            //if (SelectedShape != null)
+            //{
+            //    foreach (var graphic in SelectedGraphics)
+            //    {
+            //        Editor.DrawGraphicHandles(graphic);
+            //    }
+            //}
+
+            //if (dragging && (Editor.SelectedVerts.Count == 0 || ShiftHeld))
+            //{
+            //    GL.Begin(PrimitiveType.LineLoop);
+            //    GL.Vertex2(selectionRect.X, selectionRect.Y);
+            //    GL.Vertex2(selectionRect.X + Editor.dragPosition.X,  selectionRect.Y);
+            //    GL.Vertex2(selectionRect.X + Editor.dragPosition.X,  selectionRect.Y + Editor.dragPosition.Y);
+            //    GL.Vertex2(selectionRect.X,  selectionRect.Y + Editor.dragPosition.Y);
+            //    GL.End();
+            //}
 
             GL.PopMatrix();
             GL.MatrixMode(MatrixMode.Projection);
@@ -135,18 +161,9 @@ namespace Lumenati
             glControl.SwapBuffers();
         }
 
-        void PopulateTreeView()
+        void PopulateShapeTree()
         {
-            treeView1.Nodes.Clear();
-            
-            //foreach (var mc in Editor.lm.Sprites)
-            //{
-            //    var mcNode = new TreeNode($"Sprite c{mc.CharacterId}");
-            //    mcNode.Tag = mc;
-
-            //    treeView1.Nodes.Add(mcNode);
-            //}
-
+            shapeTree.Nodes.Clear();
             foreach (var shape in Editor.lm.Shapes)
             {
                 var shapeNode = new TreeNode($"Shape c{shape.CharacterId}");
@@ -162,15 +179,33 @@ namespace Lumenati
                     }
                 }
 
-                treeView1.Nodes.Add(shapeNode);
+                shapeTree.Nodes.Add(shapeNode);
             }
         }
 
         void loadFile (string filename)
         {
             Editor.LoadFile(filename);
-            PopulateTreeView();
+            listView1.Items.Clear();
+            foreach (var mc in Editor.lm.Sprites)
+            {
+                var mcItem = new ListViewItem($"Sprite c{mc.CharacterId}");
+                mcItem.Tag = mc;
+
+                listView1.Items.Add(mcItem);
+            }
+
             EnableControls();
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            if (listView1.SelectedItems.Count == 0)
+                return;
+
+            SelectedSprite = Editor.lm.Sprites[listView1.SelectedIndices[0]];
+            //PopulateShapeTree();
         }
 
         private void EnableControls()
