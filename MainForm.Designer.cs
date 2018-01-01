@@ -40,11 +40,10 @@
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.atlasesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.shapeTree = new System.Windows.Forms.TreeView();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.shapeTree = new System.Windows.Forms.TreeView();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAtlasId)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -55,7 +54,6 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
             // glControl
@@ -67,7 +65,7 @@
             this.glControl.Location = new System.Drawing.Point(0, 0);
             this.glControl.Margin = new System.Windows.Forms.Padding(5);
             this.glControl.Name = "glControl";
-            this.glControl.Size = new System.Drawing.Size(699, 642);
+            this.glControl.Size = new System.Drawing.Size(699, 709);
             this.glControl.TabIndex = 0;
             this.glControl.VSync = false;
             this.glControl.Load += new System.EventHandler(this.glControl1_Load);
@@ -89,7 +87,7 @@
             0,
             0});
             this.numericUpDownAtlasId.Name = "numericUpDownAtlasId";
-            this.numericUpDownAtlasId.Size = new System.Drawing.Size(276, 22);
+            this.numericUpDownAtlasId.Size = new System.Drawing.Size(275, 22);
             this.numericUpDownAtlasId.TabIndex = 5;
             this.numericUpDownAtlasId.ValueChanged += new System.EventHandler(this.numericUpDownAtlasId_ValueChanged);
             // 
@@ -191,38 +189,6 @@
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 5;
             // 
-            // shapeTree
-            // 
-            this.shapeTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.shapeTree.Location = new System.Drawing.Point(4, 33);
-            this.shapeTree.Name = "shapeTree";
-            this.shapeTree.Size = new System.Drawing.Size(286, 470);
-            this.shapeTree.TabIndex = 0;
-            this.shapeTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
-            // 
-            // splitContainer2
-            // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Margin = new System.Windows.Forms.Padding(4);
-            this.splitContainer2.Name = "splitContainer2";
-            // 
-            // splitContainer2.Panel1
-            // 
-            this.splitContainer2.Panel1.Controls.Add(this.trackBar1);
-            this.splitContainer2.Panel1.Controls.Add(this.glControl);
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.shapeTree);
-            this.splitContainer2.Panel2.Controls.Add(this.numericUpDownAtlasId);
-            this.splitContainer2.Size = new System.Drawing.Size(997, 709);
-            this.splitContainer2.SplitterDistance = 699;
-            this.splitContainer2.SplitterWidth = 5;
-            this.splitContainer2.TabIndex = 0;
-            // 
             // listView1
             // 
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -242,17 +208,36 @@
             // 
             this.columnHeader1.Width = 266;
             // 
-            // trackBar1
+            // splitContainer2
             // 
-            this.trackBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Margin = new System.Windows.Forms.Padding(4);
+            this.splitContainer2.Name = "splitContainer2";
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.glControl);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.shapeTree);
+            this.splitContainer2.Panel2.Controls.Add(this.numericUpDownAtlasId);
+            this.splitContainer2.Size = new System.Drawing.Size(997, 709);
+            this.splitContainer2.SplitterDistance = 699;
+            this.splitContainer2.SplitterWidth = 5;
+            this.splitContainer2.TabIndex = 0;
+            // 
+            // shapeTree
+            // 
+            this.shapeTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBar1.Location = new System.Drawing.Point(1, 650);
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(693, 56);
-            this.trackBar1.TabIndex = 1;
-            this.trackBar1.Value = 2;
-            this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
+            this.shapeTree.Location = new System.Drawing.Point(4, 33);
+            this.shapeTree.Name = "shapeTree";
+            this.shapeTree.Size = new System.Drawing.Size(285, 470);
+            this.shapeTree.TabIndex = 0;
+            this.shapeTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // MainForm
             // 
@@ -279,11 +264,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel1.PerformLayout();
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -307,7 +290,6 @@
         private System.Windows.Forms.TreeView shapeTree;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.TrackBar trackBar1;
     }
 }
 

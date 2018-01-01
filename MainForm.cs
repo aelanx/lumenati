@@ -69,7 +69,7 @@ namespace Lumenati
 
         bool ShiftHeld = false;
 
-        Lumen.Sprite SelectedSprite = null;
+        RuntimeSprite SelectedSprite = null;
 
         Lumen.Shape SelectedShape = null;
         List<Lumen.Graphic> SelectedGraphics = new List<Lumen.Graphic>();
@@ -114,10 +114,20 @@ namespace Lumenati
             GL.PushMatrix();
             GL.LoadIdentity();
 
-            GL.Translate(ViewportPosition);
+            //GL.Translate(ViewportPosition);
             GL.Scale(ViewportZoom, ViewportZoom, 0);
 
-            rootMc.Render();
+            if (SelectedSprite != null)
+            {
+                GL.Translate(glControl.ClientRectangle.Width / 2 / ViewportZoom, glControl.ClientRectangle.Height / 2 / ViewportZoom, 0);
+                SelectedSprite.Update();
+                SelectedSprite.Render();
+            }
+            else
+            {
+                rootMc.Update();
+                rootMc.Render();
+            }
 
 
             //if (SelectedShape != null)
@@ -197,10 +207,11 @@ namespace Lumenati
         {
 
             if (listView1.SelectedItems.Count == 0)
-                return;
+                SelectedSprite = null;
+            else
+                SelectedSprite = Editor.RuntimeSprites[listView1.SelectedIndices[0]];
 
-            SelectedSprite = Editor.lm.Sprites[listView1.SelectedIndices[0]];
-            trackBar1.Maximum = SelectedSprite.Frames.Count - 1;
+            //trackBar1.Maximum = SelectedSprite.Frames.Count - 1;
             //PopulateShapeTree();
         }
 
@@ -219,7 +230,7 @@ namespace Lumenati
         private void glControl1_Load(object sender, EventArgs e)
         {
 #if DEBUG
-            var name = "com_bg02";
+            var name = "event";
             loadFile($@"C:\s4explore\extract\data\ui\lumen\{name}\{name}.lm");
 #endif
             glControl.MouseWheel += glControl_MouseWheel;

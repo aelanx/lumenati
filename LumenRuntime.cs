@@ -81,37 +81,40 @@ namespace Lumenati
 
             CurrentFrame++;
             CurrentFrame %= Sprite.Frames.Count;
+
+            foreach (var obj in DisplayList.Values)
+            {
+                if (obj.sprite != null)
+                    obj.sprite.Update();
+            }
         }
 
         public void Render()
         {
-            Update();
-
             foreach (var obj in DisplayList.Values)
             {
-                GL.PushMatrix();
-
-                if (obj.hasPos)
-                    GL.Translate(obj.pos.X, obj.pos.Y, 0);
-                if (obj.hasMatrix)
-                    GL.MultMatrix(ref obj.matrix);
-
-                GL.Color4(obj.colorMult);
-
                 RenderDisplayObject(obj);
-
-                GL.PopMatrix();
             }
-
         }
 
         void RenderDisplayObject(DisplayObject obj)
         {
+            GL.PushMatrix();
+
+            if (obj.hasPos)
+                GL.Translate(obj.pos.X, obj.pos.Y, 0);
+            if (obj.hasMatrix)
+                GL.MultMatrix(ref obj.matrix);
+
+            GL.Color4(obj.colorMult);
+
             if (obj.sprite != null)
                 obj.sprite.Render();
 
             if (obj.shape != null)
                 Editor.DrawShape(obj.shape);
+
+            GL.PopMatrix();
         }
     }
 }
