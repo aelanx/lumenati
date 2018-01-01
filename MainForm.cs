@@ -22,6 +22,8 @@ namespace Lumenati
         Vector3 _viewportPosUV = Vector3.Zero;
         float _cameraZoomVertex = 1;
         float _cameraZoomUV = 1;
+        long lastRenderTime = 0;
+        float frameLength;
 
         Vector3 ViewportPosition
         {
@@ -68,33 +70,27 @@ namespace Lumenati
         bool ShiftHeld = false;
 
         Lumen.Sprite SelectedSprite = null;
+
         Lumen.Shape SelectedShape = null;
         List<Lumen.Graphic> SelectedGraphics = new List<Lumen.Graphic>();
+        RuntimeSprite rootMc;
 
         public MainForm()
         {
             InitializeComponent();
         }
 
-        Lumen.Shape getShapeByCharacterId(int characterId)
-        {
-            // FIXME: need to use a displaylist. this is garbage
-
-            foreach (var shape in Editor.lm.Shapes)
-            {
-                if (shape.CharacterId == characterId)
-                    return shape;
-            }
-
-            return null;
-        }
-
         private void Application_Idle(object sender, EventArgs e)
         {
-            if (!glControl.IsIdle)
+            glControl.MakeCurrent();
+            glControl.Invalidate();
+
+            long renderTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            if ((renderTime - lastRenderTime) <= frameLength)
                 return;
 
-            glControl.MakeCurrent();
+            lastRenderTime = renderTime;
+
 
             var ortho = Matrix4.CreateOrthographicOffCenter(
                 0,
@@ -121,18 +117,8 @@ namespace Lumenati
             GL.Translate(ViewportPosition);
             GL.Scale(ViewportZoom, ViewportZoom, 0);
 
-            if (SelectedSprite != null)
-            {
-                int frameId = 0;
+            rootMc.Render();
 
-                foreach (var placement in SelectedSprite.Frames[frameId].Placements)
-                {
-                    var shape = getShapeByCharacterId(placement.CharacterId);
-
-                    if (shape != null)
-                        Editor.DrawShape(shape);
-                }
-            }
 
             //if (SelectedShape != null)
             //{
@@ -195,6 +181,15 @@ namespace Lumenati
                 listView1.Items.Add(mcItem);
             }
 
+            foreach (var sprite in Editor.lm.Sprites)
+            {
+                var rs = new RuntimeSprite(Editor, sprite);
+                Editor.RuntimeSprites.Add(rs);
+            }
+
+            rootMc = Editor.RuntimeSprites[Editor.RuntimeSprites.Count-1];
+            frameLength = 1000f / Editor.lm.properties.framerate;
+
             EnableControls();
         }
 
@@ -205,7 +200,13 @@ namespace Lumenati
                 return;
 
             SelectedSprite = Editor.lm.Sprites[listView1.SelectedIndices[0]];
+            trackBar1.Maximum = SelectedSprite.Frames.Count - 1;
             //PopulateShapeTree();
+        }
+
+        private void trackBar1_ValueChanged(object sender, EventArgs e)
+        {
+            //CurrentFrame = trackBar1.Value;
         }
 
         private void EnableControls()
@@ -218,11 +219,12 @@ namespace Lumenati
         private void glControl1_Load(object sender, EventArgs e)
         {
 #if DEBUG
-            loadFile(@"C:\s4explore\workspace\content\patch\data\ui\lumen\main\main.lm");
+            var name = "com_bg02";
+            loadFile($@"C:\s4explore\extract\data\ui\lumen\{name}\{name}.lm");
 #endif
             glControl.MouseWheel += glControl_MouseWheel;
 
-            GL.ClearColor(Color.Black);
+            GL.ClearColor(Color.CornflowerBlue);
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenTK;
+using OpenTK.Graphics;
 
 namespace Lumenati
 {
@@ -190,57 +191,57 @@ namespace Lumenati
             }
         }
 
-        public class Color
-        {
-            public float R;
-            public float G;
-            public float B;
-            public float A;
+        //public class Color
+        //{
+        //    public float R;
+        //    public float G;
+        //    public float B;
+        //    public float A;
 
-            public Color()
-            {
-            }
+        //    public Color()
+        //    {
+        //    }
 
-            public Color(float r, float g, float b, float a)
-            {
-                R = r;
-                G = g;
-                B = b;
-                A = a;
-            }
+        //    public Color(float r, float g, float b, float a)
+        //    {
+        //        R = r;
+        //        G = g;
+        //        B = b;
+        //        A = a;
+        //    }
 
-            public Color(short r, short g, short b, short a)
-            {
-                R = r / 256.0f;
-                G = g / 256.0f;
-                B = b / 256.0f;
-                A = a / 256.0f;
-            }
+        //    public Color(short r, short g, short b, short a)
+        //    {
+        //        R = r / 256.0f;
+        //        G = g / 256.0f;
+        //        B = b / 256.0f;
+        //        A = a / 256.0f;
+        //    }
 
-            public Color(uint rgba)
-            {
-                R = ((rgba >> 24) & 0xFF) / 255.0f;
-                G = ((rgba >> 16) & 0xFF) / 255.0f;
-                B = ((rgba >> 8) & 0xFF) / 255.0f;
-                A = ((rgba) & 0xFF) / 255.0f;
-            }
+        //    public Color(uint rgba)
+        //    {
+        //        R = ((rgba >> 24) & 0xFF) / 255.0f;
+        //        G = ((rgba >> 16) & 0xFF) / 255.0f;
+        //        B = ((rgba >> 8) & 0xFF) / 255.0f;
+        //        A = ((rgba) & 0xFF) / 255.0f;
+        //    }
 
-            public override string ToString()
-            {
-                return $"[{R}, {G}, {B}, {A}]";
-            }
+        //    public override string ToString()
+        //    {
+        //        return $"[{R}, {G}, {B}, {A}]";
+        //    }
 
-            public override bool Equals(object obj)
-            {
-                var other = (Color)obj;
-                return (R == other.R && G == other.G && B == other.B && A == other.A);
-            }
+        //    public override bool Equals(object obj)
+        //    {
+        //        var other = (Color)obj;
+        //        return (R == other.R && G == other.G && B == other.B && A == other.A);
+        //    }
 
-            public override int GetHashCode()
-            {
-                return (int)R ^ (int)G ^ (int)B ^ (int)A;
-            }
-        }
+        //    public override int GetHashCode()
+        //    {
+        //        return (int)R ^ (int)G ^ (int)B ^ (int)A;
+        //    }
+        //}
 
         public class Rect
         {
@@ -869,8 +870,8 @@ namespace Lumenati
         public string Filename;
         public Header header = new Header();
         public List<string> Strings = new List<string>();
-        public List<Color> Colors = new List<Color>();
-        public List<Matrix3x2> Transforms = new List<Matrix3x2>();
+        public List<Color4> Colors = new List<Color4>();
+        public List<Matrix4> Transforms = new List<Matrix4>();
         public List<Vector2> Positions = new List<Vector2>();
         public List<Rect> Bounds = new List<Rect>();
         public List<TextureAtlas> Atlases = new List<TextureAtlas>();
@@ -929,7 +930,7 @@ namespace Lumenati
             return index;
         }
 
-        public int AddColor(Color color)
+        public int AddColor(Color4 color)
         {
             int index = -1;
 
@@ -946,7 +947,7 @@ namespace Lumenati
             return index;
         }
 
-        public int AddTransform(Matrix3x2 xform)
+        public int AddTransform(Matrix4 xform)
         {
             int index = -1;
 
@@ -994,10 +995,13 @@ namespace Lumenati
                 switch (tagType)
                 {
                     case TagType.Invalid:
+                    {
                         // uhhh. i think there's a specific exception for this
                         throw new Exception("Malformed file");
+                    }
 
                     case TagType.Symbols:
+                    {
                         int numSymbols = f.readInt();
 
                         while (Strings.Count < numSymbols)
@@ -1009,58 +1013,90 @@ namespace Lumenati
                         }
 
                         break;
+                    }
 
                     case TagType.Colors:
+                    {
                         int numColors = f.readInt();
 
                         for (int i = 0; i < numColors; i++)
                         {
-                            AddColor(new Color(f.readShort(), f.readShort(), f.readShort(), f.readShort()));
+                            AddColor(new Color4(f.readShort(), f.readShort(), f.readShort(), f.readShort()));
                         }
 
                         break;
+                    }
 
                     case TagType.Fonts:
+                    {
                         unk000A = new UnhandledTag(tagType, tagSize, f);
                         break;
+                    }
                     case TagType.UnkF00A:
+                    {
                         unkF00A = new UnhandledTag(tagType, tagSize, f);
                         break;
+                    }
                     case TagType.UnkF00B:
+                    {
                         unkF00B = new UnhandledTag(tagType, tagSize, f);
                         break;
+                    }
                     case TagType.UnkF008:
+                    {
                         unkF008 = new UnhandledTag(tagType, tagSize, f);
                         break;
+                    }
                     case TagType.UnkF009:
+                    {
                         unkF009 = new UnhandledTag(tagType, tagSize, f);
                         break;
+                    }
                     case TagType.Defines:
+                    {
                         Defines = new Properties2(f);
                         break;
+                    }
                     case TagType.ActionScript:
+                    {
                         Actionscript = new UnhandledTag(tagType, tagSize, f);
                         break;
+                    }
 
                     case TagType.End:
+                    {
                         done = true;
                         break;
+                    }
 
                     case TagType.Transforms:
+                    {
                         int numTransforms = f.readInt();
 
                         for (int i = 0; i < numTransforms; i++)
                         {
-                            Transforms.Add(new Matrix3x2(
-                                f.readFloat(), f.readFloat(),
-                                f.readFloat(), f.readFloat(),
-                                f.readFloat(), f.readFloat()
-                            ));
+                            float a = f.readFloat();
+                            float b = f.readFloat();
+                            float c = f.readFloat();
+                            float d = f.readFloat();
+                            float x = f.readFloat();
+                            float y = f.readFloat();
+
+                            var mat = new Matrix4(
+                                a, b, 0, 0,
+                                c, d, 0, 0,
+                                x, y, 1, 0,
+                                0, 0, 0, 1
+                            );
+
+                            Transforms.Add(mat);
                         }
 
                         break;
+                    }
 
                     case TagType.Positions:
+                    {
                         int numPositions = f.readInt();
 
                         for (int i = 0; i < numPositions; i++)
@@ -1069,8 +1105,10 @@ namespace Lumenati
                         }
 
                         break;
+                    }
 
                     case TagType.Bounds:
+                    {
                         int numBounds = f.readInt();
 
                         for (int i = 0; i < numBounds; i++)
@@ -1078,12 +1116,16 @@ namespace Lumenati
                             Bounds.Add(new Rect(f.readFloat(), f.readFloat(), f.readFloat(), f.readFloat()));
                         }
                         break;
+                    }
 
                     case TagType.Properties:
+                    {
                         properties = new Properties(f);
                         break;
+                    }
 
                     case TagType.TextureAtlases:
+                    {
                         int numAtlases = f.readInt();
 
                         for (int i = 0; i < numAtlases; i++)
@@ -1098,21 +1140,30 @@ namespace Lumenati
                         }
 
                         break;
+                    }
 
                     case TagType.Shape:
+                    {
                         Shapes.Add(new Shape(f));
                         break;
+                    }
 
                     case TagType.DynamicText:
+                    {
                         Texts.Add(new DynamicText(f));
                         break;
+                    }
 
                     case TagType.DefineSprite:
+                    {
                         Sprites.Add(new Sprite(f));
                         break;
+                    }
 
                     default:
+                    {
                         throw new NotImplementedException($"Unhandled tag id: 0x{(uint)tagType:X} @ 0x{tagOffset:X}");
+                    }
                 }
             }
         } // Read()

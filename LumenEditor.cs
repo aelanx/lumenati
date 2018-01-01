@@ -25,10 +25,11 @@ namespace Lumenati
         public Lumen lm;
         public Texlist texlist;
         Dictionary<int, Nut> atlases = new Dictionary<int, Nut>();
+        public List<RuntimeSprite> RuntimeSprites = new List<RuntimeSprite>();
 
         // mode shit
         public List<SelectedVertex> SelectedVerts = new List<SelectedVertex>();
-        public EditorMode Mode = EditorMode.Vertex;
+        public EditorMode Mode = EditorMode.UV;
 
         // short term
         public Vector3 dragPosition = Vector3.Zero;
@@ -41,6 +42,39 @@ namespace Lumenati
             texlist = new Texlist(Path.Combine(filePath, "texlist.lst"));
 
             atlases.Clear();
+        }
+
+        public Lumen.Shape GetShapeByCharacterId(int characterId)
+        {
+            foreach (var shape in lm.Shapes)
+            {
+                if (shape.CharacterId == characterId)
+                    return shape;
+            }
+
+            return null;
+        }
+
+        public Lumen.Sprite GetSpriteByCharacterId(int characterId)
+        {
+            foreach (var sprite in lm.Sprites)
+            {
+                if (sprite.CharacterId == characterId)
+                    return sprite;
+            }
+
+            return null;
+        }
+
+        public RuntimeSprite GetRuntimeSpriteByCharacterId(int characterId)
+        {
+            foreach (var sprite in RuntimeSprites)
+            {
+                if (sprite.CharacterId == characterId)
+                    return sprite;
+            }
+
+            return null;
         }
 
         public Nut GetAtlas(int id)

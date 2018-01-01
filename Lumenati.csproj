@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ImGui.NET">
+      <HintPath>lib\ImGui.NET.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK">
       <HintPath>lib\OpenTK.dll</HintPath>
     </Reference>
@@ -58,6 +61,7 @@
     <Compile Include="AtlasForm.Designer.cs">
       <DependentUpon>AtlasForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="DisplayObject.cs" />
     <Compile Include="Lumen.cs" />
     <Compile Include="LumenEditor.cs" />
     <Compile Include="MainForm.cs">
@@ -71,6 +75,7 @@
     <Compile Include="Nut.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="LumenRuntime.cs" />
     <Compile Include="Texlist.cs" />
     <EmbeddedResource Include="AtlasForm.resx">
       <DependentUpon>AtlasForm.cs</DependentUpon>

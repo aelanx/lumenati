@@ -44,6 +44,7 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAtlasId)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -54,6 +55,7 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
             // glControl
@@ -65,7 +67,7 @@
             this.glControl.Location = new System.Drawing.Point(0, 0);
             this.glControl.Margin = new System.Windows.Forms.Padding(5);
             this.glControl.Name = "glControl";
-            this.glControl.Size = new System.Drawing.Size(699, 709);
+            this.glControl.Size = new System.Drawing.Size(699, 642);
             this.glControl.TabIndex = 0;
             this.glControl.VSync = false;
             this.glControl.Load += new System.EventHandler(this.glControl1_Load);
@@ -209,6 +211,7 @@
             // 
             // splitContainer2.Panel1
             // 
+            this.splitContainer2.Panel1.Controls.Add(this.trackBar1);
             this.splitContainer2.Panel1.Controls.Add(this.glControl);
             // 
             // splitContainer2.Panel2
@@ -239,6 +242,18 @@
             // 
             this.columnHeader1.Width = 266;
             // 
+            // trackBar1
+            // 
+            this.trackBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackBar1.Location = new System.Drawing.Point(1, 650);
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(693, 56);
+            this.trackBar1.TabIndex = 1;
+            this.trackBar1.Value = 2;
+            this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
+            // 
             // MainForm
             // 
             this.AllowDrop = true;
@@ -264,9 +279,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel1.PerformLayout();
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -290,6 +307,7 @@
         private System.Windows.Forms.TreeView shapeTree;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.TrackBar trackBar1;
     }
 }
 
