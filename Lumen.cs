@@ -17,6 +17,7 @@ namespace Lumenati
             Transforms = 0xF003,
             Bounds = 0xF004,
             ActionScript = 0xF005,
+            ActionScript2 = 0xFF05,
             TextureAtlases = 0xF007,
             UnkF008 = 0xF008,
             UnkF009 = 0xF009,
@@ -881,6 +882,7 @@ namespace Lumenati
 
         public Properties properties = new Properties();
         public UnhandledTag Actionscript;
+        public UnhandledTag Actionscript2;
         public UnhandledTag unkF008;
         public UnhandledTag unkF009;
         public UnhandledTag unkF00A;
@@ -1060,6 +1062,11 @@ namespace Lumenati
                     case TagType.ActionScript:
                     {
                         Actionscript = new UnhandledTag(tagType, tagSize, f);
+                        break;
+                    }
+                    case TagType.ActionScript2:
+                    {
+                        Actionscript2 = new UnhandledTag(tagType, tagSize, f);
                         break;
                     }
 
@@ -1307,6 +1314,8 @@ namespace Lumenati
             writeBounds(o);
 
             Actionscript.Write(o);
+            if (Actionscript2 != null)
+                Actionscript2.Write(o);
 
             writeAtlases(o);
 

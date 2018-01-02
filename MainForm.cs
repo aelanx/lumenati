@@ -230,7 +230,7 @@ namespace Lumenati
         private void glControl1_Load(object sender, EventArgs e)
         {
 #if DEBUG
-            var name = "event";
+            var name = "result";
             loadFile($@"C:\s4explore\extract\data\ui\lumen\{name}\{name}.lm");
 #endif
             glControl.MouseWheel += glControl_MouseWheel;
