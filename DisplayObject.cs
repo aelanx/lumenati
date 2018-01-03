@@ -10,7 +10,7 @@ namespace Lumenati
 {
     public class DisplayObject
     {
-        public Lumen.Shape shape;
+        public RuntimeShape shape;
         public RuntimeSprite sprite;
         //public RuntimeText text;
 
@@ -25,7 +25,7 @@ namespace Lumenati
         public Matrix4 matrix;
         public Vector2 pos;
 
-        public Color4 colorMult;
-        public Color4 colorAdd;
+        public Vector4 colorAdd;
+        public Vector4 colorMult;
     }
 }

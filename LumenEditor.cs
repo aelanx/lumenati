@@ -26,6 +26,8 @@ namespace Lumenati
         public Texlist texlist;
         Dictionary<int, Nut> atlases = new Dictionary<int, Nut>();
         public List<RuntimeSprite> RuntimeSprites = new List<RuntimeSprite>();
+        public List<RuntimeShape> RuntimeShapes = new List<RuntimeShape>();
+        public LumenShader Shader;
 
         // mode shit
         public List<SelectedVertex> SelectedVerts = new List<SelectedVertex>();
@@ -40,6 +42,25 @@ namespace Lumenati
             filePath = Path.GetDirectoryName(filename);
             lm = new Lumen(filename);
             texlist = new Texlist(Path.Combine(filePath, "texlist.lst"));
+            Shader = new LumenShader();
+            Shader.EnableAttrib();
+            GL.UseProgram(Shader.ProgramID);
+            GL.Uniform4(Shader.uColorAdd, new Vector4(0, 0, 0, 0));
+            GL.Uniform4(Shader.uColorMul, new Vector4(1, 1, 1, 1));
+            GL.Uniform1(Shader.uTex, 0);
+            //GL.UseProgram(0);
+
+            foreach (var sprite in lm.Sprites)
+            {
+                var rs = new RuntimeSprite(this, sprite);
+                RuntimeSprites.Add(rs);
+            }
+
+            foreach (var shape in lm.Shapes)
+            {
+                var rs = new RuntimeShape(this, shape);
+                RuntimeShapes.Add(rs);
+            }
 
             atlases.Clear();
         }
@@ -72,6 +93,17 @@ namespace Lumenati
             {
                 if (sprite.CharacterId == characterId)
                     return sprite;
+            }
+
+            return null;
+        }
+
+        public RuntimeShape GetRuntimeShapeByCharacterId(int characterId)
+        {
+            foreach (var shape in RuntimeShapes)
+            {
+                if (shape.CharacterId == characterId)
+                    return shape;
             }
 
             return null;
@@ -135,22 +167,25 @@ namespace Lumenati
             GL.End();
         }
 
-        public void DrawShape(Lumen.Shape shape)
+        public void DrawBounds(Lumen.Rect rect)
         {
-            foreach (var graphic in shape.Graphics)
-            {
-                var atlas = GetAtlas(graphic.AtlasId);
-                if (atlas != null)
-                    GL.BindTexture(TextureTarget.Texture2D, atlas.glId);
-                else
-                    GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.Begin(PrimitiveType.Quads);
+            GL.Vertex2(rect.Left, rect.Top);
+            GL.Vertex2(rect.Right, rect.Top);
+            GL.Vertex2(rect.Right, rect.Bottom);
+            GL.Vertex2(rect.Left, rect.Bottom);
+            GL.End();
 
-                DrawGraphic(graphic, PrimitiveType.Triangles);
-            }
+            DrawSquare(8, rect.Left, rect.Top);
+            DrawSquare(8, rect.Right, rect.Top);
+            DrawSquare(8, rect.Right, rect.Bottom);
+            DrawSquare(8, rect.Left, rect.Bottom);
         }
 
         public void DrawGraphic(Lumen.Graphic gfx, PrimitiveType primitiveType)
         {
+            GL.UseProgram(Shader.ProgramID);
+
             GL.Begin(primitiveType);
             foreach (var idx in gfx.Indices)
             {
@@ -159,6 +194,7 @@ namespace Lumenati
                 GL.Vertex2(vert.X, vert.Y);
             }
             GL.End();
+            //GL.UseProgram(0);
         }
 
         public void DrawGraphicHandles(Lumen.Graphic graphic)

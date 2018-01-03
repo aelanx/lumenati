@@ -191,12 +191,6 @@ namespace Lumenati
                 listView1.Items.Add(mcItem);
             }
 
-            foreach (var sprite in Editor.lm.Sprites)
-            {
-                var rs = new RuntimeSprite(Editor, sprite);
-                Editor.RuntimeSprites.Add(rs);
-            }
-
             rootMc = Editor.RuntimeSprites[Editor.RuntimeSprites.Count-1];
             frameLength = 1000f / Editor.lm.properties.framerate;
 
@@ -230,7 +224,7 @@ namespace Lumenati
         private void glControl1_Load(object sender, EventArgs e)
         {
 #if DEBUG
-            var name = "result";
+            var name = "main";
             loadFile($@"C:\s4explore\extract\data\ui\lumen\{name}\{name}.lm");
 #endif
             glControl.MouseWheel += glControl_MouseWheel;
@@ -474,13 +468,11 @@ namespace Lumenati
 
         private void glControl_MouseMove(object sender, MouseEventArgs e)
         {
-            Vector3 newPosition = new Vector3(e.X, e.Y, 0);
-            Vector3 delta = newPosition - mousePosition;
+            var newPosition = new Vector3(e.X, e.Y, 0);
+            var delta = newPosition - mousePosition;
 
             if (panning)
-            {
                 ViewportPosition += (delta * ViewportZoom);
-            }
 
             if (dragging)
                 Editor.dragPosition += (delta / ViewportZoom);

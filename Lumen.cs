@@ -871,7 +871,7 @@ namespace Lumenati
         public string Filename;
         public Header header = new Header();
         public List<string> Strings = new List<string>();
-        public List<Color4> Colors = new List<Color4>();
+        public List<Vector4> Colors = new List<Vector4>();
         public List<Matrix4> Transforms = new List<Matrix4>();
         public List<Vector2> Positions = new List<Vector2>();
         public List<Rect> Bounds = new List<Rect>();
@@ -932,7 +932,7 @@ namespace Lumenati
             return index;
         }
 
-        public int AddColor(Color4 color)
+        public int AddColor(Vector4 color)
         {
             int index = -1;
 
@@ -1023,7 +1023,7 @@ namespace Lumenati
 
                         for (int i = 0; i < numColors; i++)
                         {
-                            AddColor(new Color4(f.readShort(), f.readShort(), f.readShort(), f.readShort()));
+                            AddColor(new Vector4(f.readShort() / 256f, f.readShort() / 256f, f.readShort() / 256f, f.readShort() / 256f));
                         }
 
                         break;
@@ -1206,10 +1206,10 @@ namespace Lumenati
 
             foreach (var color in Colors)
             {
-                o.writeShort((short)(color.R * 256));
-                o.writeShort((short)(color.G * 256));
-                o.writeShort((short)(color.B * 256));
-                o.writeShort((short)(color.A * 256));
+                o.writeShort((short)(color.X * 256));
+                o.writeShort((short)(color.Y * 256));
+                o.writeShort((short)(color.Z * 256));
+                o.writeShort((short)(color.W * 256));
             }
         }
 

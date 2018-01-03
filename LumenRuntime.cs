@@ -1,8 +1,46 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Lumenati
 {
+    public class RuntimeShape
+    {
+        public int CharacterId;
+
+        Lumen.Shape Shape;
+        Lumen.Rect Bounds;
+        LumenEditor Editor;
+
+        public RuntimeShape(LumenEditor editor, Lumen.Shape shape)
+        {
+            Editor = editor;
+            Shape = shape;
+            Bounds = Editor.lm.Bounds[Shape.BoundsId];
+
+            CharacterId = Shape.CharacterId;
+        }
+
+        public void Render()
+        {
+            foreach (var graphic in Shape.Graphics)
+            {
+                var atlas = Editor.GetAtlas(graphic.AtlasId);
+                if (atlas != null)
+                    GL.BindTexture(TextureTarget.Texture2D, atlas.glId);
+                else
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+
+                Editor.DrawGraphic(graphic, PrimitiveType.Triangles);
+            }
+
+            //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+            //Editor.DrawBounds(Bounds);
+            //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+        }
+    }
+
     public class RuntimeSprite
     {
         public bool Playing = true;
@@ -35,7 +73,6 @@ namespace Lumenati
 
             foreach (var placement in frame.Placements)
             {
-
                 DisplayObject obj;
 
                 if (DisplayList.ContainsKey(placement.Depth))
@@ -45,7 +82,7 @@ namespace Lumenati
                 else
                 {
                     obj = new DisplayObject();
-                    obj.shape = Editor.GetShapeByCharacterId(placement.CharacterId);
+                    obj.shape = Editor.GetRuntimeShapeByCharacterId(placement.CharacterId);
                     if (obj.shape == null)
                         obj.sprite = Editor.GetRuntimeSpriteByCharacterId(placement.CharacterId);
 
@@ -106,13 +143,15 @@ namespace Lumenati
             if (obj.hasMatrix)
                 GL.MultMatrix(ref obj.matrix);
 
-            GL.Color4(obj.colorMult);
+            if (obj.colorAdd != null)
+                GL.Uniform4(Editor.Shader.uColorAdd, obj.colorAdd);
+            if (obj.colorMult != null)
+                GL.Uniform4(Editor.Shader.uColorMul, obj.colorMult);
 
             if (obj.sprite != null)
                 obj.sprite.Render();
-
-            if (obj.shape != null)
-                Editor.DrawShape(obj.shape);
+            else if (obj.shape != null)
+                obj.shape.Render();
 
             GL.PopMatrix();
         }
