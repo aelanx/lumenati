@@ -184,8 +184,6 @@ namespace Lumenati
 
         public void DrawGraphic(Lumen.Graphic gfx, PrimitiveType primitiveType)
         {
-            GL.UseProgram(Shader.ProgramID);
-
             GL.Begin(primitiveType);
             foreach (var idx in gfx.Indices)
             {
@@ -226,8 +224,8 @@ namespace Lumenati
             {
                 DrawSquare(8, vert.X, vert.Y);
             }
-            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
             foreach (var vertSelection in SelectedVerts)
             {
                 var v = vertSelection.graphic.Verts[vertSelection.vertId];

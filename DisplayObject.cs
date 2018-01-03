@@ -25,7 +25,15 @@ namespace Lumenati
         public Matrix4 matrix;
         public Vector2 pos;
 
+        public bool hasColor;
         public Vector4 colorAdd;
         public Vector4 colorMult;
+    }
+
+    // this... uhhh. doesn't belong here...
+    public class RenderState
+    {
+        public Vector4 colorAdd = Vector4.Zero;
+        public Vector4 colorMult = Vector4.One;
     }
 }

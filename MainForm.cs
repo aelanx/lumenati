@@ -117,16 +117,18 @@ namespace Lumenati
             //GL.Translate(ViewportPosition);
             GL.Scale(ViewportZoom, ViewportZoom, 0);
 
+            GL.UseProgram(Editor.Shader.ProgramID);
+
             if (SelectedSprite != null)
             {
                 GL.Translate(glControl.ClientRectangle.Width / 2 / ViewportZoom, glControl.ClientRectangle.Height / 2 / ViewportZoom, 0);
                 SelectedSprite.Update();
-                SelectedSprite.Render();
+                SelectedSprite.Render(new RenderState());
             }
             else
             {
                 rootMc.Update();
-                rootMc.Render();
+                rootMc.Render(new RenderState());
             }
 
 
@@ -191,7 +193,7 @@ namespace Lumenati
                 listView1.Items.Add(mcItem);
             }
 
-            rootMc = Editor.RuntimeSprites[Editor.RuntimeSprites.Count-1];
+            rootMc = Editor.RuntimeSprites[Editor.RuntimeSprites.Count - 1];
             frameLength = 1000f / Editor.lm.properties.framerate;
 
             EnableControls();
@@ -207,11 +209,6 @@ namespace Lumenati
 
             //trackBar1.Maximum = SelectedSprite.Frames.Count - 1;
             //PopulateShapeTree();
-        }
-
-        private void trackBar1_ValueChanged(object sender, EventArgs e)
-        {
-            //CurrentFrame = trackBar1.Value;
         }
 
         private void EnableControls()

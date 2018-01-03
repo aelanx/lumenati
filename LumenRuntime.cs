@@ -45,6 +45,9 @@ namespace Lumenati
     {
         public bool Playing = true;
         public int CurrentFrame = 0;
+        public bool Visible = true;
+
+        //
         public int CharacterId;
         SortedDictionary<int, DisplayObject> DisplayList = new SortedDictionary<int, DisplayObject>();
         LumenEditor Editor;
@@ -56,6 +59,11 @@ namespace Lumenati
             Sprite = sprite;
 
             CharacterId = Sprite.CharacterId;
+        }
+
+        public void Stop()
+        {
+            Playing = false;
         }
 
         public void Update()
@@ -102,9 +110,11 @@ namespace Lumenati
                 }
 
                 if (placement.ColorAddId != -1)
+                {
+                    obj.hasColor = true;
                     obj.colorAdd = Editor.lm.Colors[placement.ColorAddId];
-                if (placement.ColorMultId != -1)
                     obj.colorMult = Editor.lm.Colors[placement.ColorMultId];
+                }
 
                 DisplayList[placement.Depth] = obj;
             }
@@ -113,7 +123,7 @@ namespace Lumenati
             {
                 // HACK: this is true for *most* files. lol
                 if (action.ActionId == 0)
-                    Playing = false;
+                    Stop();
             }
 
             CurrentFrame++;
@@ -126,34 +136,47 @@ namespace Lumenati
             }
         }
 
-        public void Render()
+        public void Render(RenderState state)
         {
+            if (!Visible)
+                return;
+
             foreach (var obj in DisplayList.Values)
             {
-                RenderDisplayObject(obj);
+                GL.PushMatrix();
+
+                if (obj.hasPos)
+                    GL.Translate(obj.pos.X, obj.pos.Y, 0);
+                if (obj.hasMatrix)
+                    GL.MultMatrix(ref obj.matrix);
+
+                var newState = new RenderState();
+                newState.colorAdd = state.colorAdd;
+                newState.colorMult = state.colorMult;
+
+                //if (obj.hasColor)
+                //{
+                //    GL.Uniform4(Editor.Shader.uColorAdd, obj.colorAdd);
+                //    GL.Uniform4(Editor.Shader.uColorMul, obj.colorMult);
+                //    newState.colorAdd = obj.colorAdd;
+                //    newState.colorMult = obj.colorMult;
+                //}
+                //else
+                //{
+                //    GL.Uniform4(Editor.Shader.uColorAdd, newState.colorAdd);
+                //    GL.Uniform4(Editor.Shader.uColorMul, newState.colorMult);
+                //}
+
+                GL.Uniform4(Editor.Shader.uColorAdd, ref obj.colorAdd);
+                GL.Uniform4(Editor.Shader.uColorMul, ref obj.colorMult);
+
+                if (obj.sprite != null)
+                    obj.sprite.Render(newState);
+                else if (obj.shape != null)
+                    obj.shape.Render();
+
+                GL.PopMatrix();
             }
-        }
-
-        void RenderDisplayObject(DisplayObject obj)
-        {
-            GL.PushMatrix();
-
-            if (obj.hasPos)
-                GL.Translate(obj.pos.X, obj.pos.Y, 0);
-            if (obj.hasMatrix)
-                GL.MultMatrix(ref obj.matrix);
-
-            if (obj.colorAdd != null)
-                GL.Uniform4(Editor.Shader.uColorAdd, obj.colorAdd);
-            if (obj.colorMult != null)
-                GL.Uniform4(Editor.Shader.uColorMul, obj.colorMult);
-
-            if (obj.sprite != null)
-                obj.sprite.Render();
-            else if (obj.shape != null)
-                obj.shape.Render();
-
-            GL.PopMatrix();
         }
     }
 }

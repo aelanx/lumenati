@@ -7,7 +7,8 @@ namespace Lumenati
         protected override string vs { get; } = @"
 #version 130
 
-//int vec2 aUV;
+//in vec2 aPos;
+//in vec2 aUV;
 out vec2 vUV;
 
 void main()
@@ -30,10 +31,12 @@ void main()
     vec4 tex = texture2D(uTex, vUV);
     tex = tex.rrrr;
 
-    if (tex.a < 0.01)
+    vec4 color = (tex * uColorMul) + uColorAdd;
+
+    if (color.a < 0.01)
         discard;
 
-    gl_FragColor = (tex * uColorMul) + uColorAdd;
+    gl_FragColor = color;
 }
 ";
 
