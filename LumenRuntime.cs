@@ -28,9 +28,22 @@ namespace Lumenati
             {
                 var atlas = Editor.GetAtlas(graphic.AtlasId);
                 if (atlas != null)
+                {
+
                     GL.BindTexture(TextureTarget.Texture2D, atlas.glId);
+                    if (atlas.type == PixelInternalFormat.CompressedRedRgtc1)
+                        GL.Uniform1(Editor.Shader.uTexFmt, 1);
+                    else if (atlas.type == PixelInternalFormat.CompressedRgRgtc2)
+                        GL.Uniform1(Editor.Shader.uTexFmt, 2);
+                    else
+                        GL.Uniform1(Editor.Shader.uTexFmt, 0);
+                }
                 else
+                {
                     GL.BindTexture(TextureTarget.Texture2D, 0);
+                    GL.Uniform1(Editor.Shader.uTexFmt, 0);
+                }
+
 
                 Editor.DrawGraphic(graphic, PrimitiveType.Triangles);
             }
@@ -154,21 +167,14 @@ namespace Lumenati
                 newState.colorAdd = state.colorAdd;
                 newState.colorMult = state.colorMult;
 
-                //if (obj.hasColor)
-                //{
-                //    GL.Uniform4(Editor.Shader.uColorAdd, obj.colorAdd);
-                //    GL.Uniform4(Editor.Shader.uColorMul, obj.colorMult);
-                //    newState.colorAdd = obj.colorAdd;
-                //    newState.colorMult = obj.colorMult;
-                //}
-                //else
-                //{
-                //    GL.Uniform4(Editor.Shader.uColorAdd, newState.colorAdd);
-                //    GL.Uniform4(Editor.Shader.uColorMul, newState.colorMult);
-                //}
+                if (obj.hasColor)
+                {
+                    newState.colorAdd = obj.colorAdd;
+                    newState.colorMult = obj.colorMult;
+                }
 
-                GL.Uniform4(Editor.Shader.uColorAdd, ref obj.colorAdd);
-                GL.Uniform4(Editor.Shader.uColorMul, ref obj.colorMult);
+                GL.Uniform4(Editor.Shader.uColorAdd, newState.colorAdd);
+                GL.Uniform4(Editor.Shader.uColorMul, newState.colorMult);
 
                 if (obj.sprite != null)
                     obj.sprite.Render(newState);
