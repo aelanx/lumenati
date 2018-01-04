@@ -96,7 +96,7 @@ namespace Lumenati
             {
                 DisplayObject obj;
 
-                if (DisplayList.ContainsKey(placement.Depth))
+                if (placement.Flags == Lumen.PlaceFlag.Place)
                 {
                     obj = DisplayList[placement.Depth];
                 }
@@ -128,6 +128,8 @@ namespace Lumenati
                     obj.colorAdd = Editor.lm.Colors[placement.ColorAddId];
                     obj.colorMult = Editor.lm.Colors[placement.ColorMultId];
                 }
+
+                obj.BlendMode = placement.BlendMode;
 
                 DisplayList[placement.Depth] = obj;
             }
@@ -175,6 +177,8 @@ namespace Lumenati
 
                 GL.Uniform4(Editor.Shader.uColorAdd, newState.colorAdd);
                 GL.Uniform4(Editor.Shader.uColorMul, newState.colorMult);
+
+                Editor.SetBlendMode(obj.BlendMode);
 
                 if (obj.sprite != null)
                     obj.sprite.Render(newState);

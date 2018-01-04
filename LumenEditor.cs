@@ -65,6 +65,29 @@ namespace Lumenati
             atlases.Clear();
         }
 
+        public void SetBlendMode(Lumen.BlendMode mode)
+        {
+            switch (mode)
+            {
+                case Lumen.BlendMode.Multiply:
+                GL.BlendFunc(BlendingFactorSrc.DstColor, BlendingFactorDest.Zero);
+                break;
+
+                case Lumen.BlendMode.Screen:
+                GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcColor);
+                break;
+
+                case Lumen.BlendMode.Add:
+                GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.One);
+                break;
+
+                case Lumen.BlendMode.Normal:
+                default:
+                GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+                break;
+            }
+        }
+
         public Lumen.Shape GetShapeByCharacterId(int characterId)
         {
             foreach (var shape in lm.Shapes)

@@ -28,6 +28,8 @@ namespace Lumenati
         public bool hasColor;
         public Vector4 colorAdd;
         public Vector4 colorMult;
+
+        public Lumen.BlendMode BlendMode;
     }
 
     // this... uhhh. doesn't belong here...

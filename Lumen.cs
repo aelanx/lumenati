@@ -44,6 +44,30 @@ namespace Lumenati
             End = 0xFF00
         }
 
+        public enum PlaceFlag : short
+        {
+            Move = 0x01,
+            Place = 0x02
+        }
+
+        public enum BlendMode : short
+        {
+            Normal = 0x00,
+            Layer = 0x02,
+            Multiply = 0x03,
+            Screen = 0x04,
+            Lighten = 0x05,
+            Darken = 0x06,
+            Difference = 0x07,
+            Add = 0x08,
+            Subtract = 0x09,
+            Invert = 0x0A,
+            Alpha = 0x0B,
+            Erase = 0x0C,
+            Overlay = 0x0D,
+            Hardlight = 0x0E
+        }
+
         public class UnhandledTag
         {
             public UnhandledTag()
@@ -550,8 +574,8 @@ namespace Lumenati
                 public int PlacementId;
                 public int Unk1;
                 public int NameId;
-                public short Unk2;
-                public short Unk3;
+                public PlaceFlag Flags;
+                public BlendMode BlendMode;
                 public short Depth;
                 public short Unk4;
 
@@ -578,8 +602,8 @@ namespace Lumenati
                     PlacementId = f.readInt();
                     Unk1 = f.readInt();
                     NameId = f.readInt();
-                    Unk2 = f.readShort();
-                    Unk3 = f.readShort();
+                    Flags = (PlaceFlag)f.readShort();
+                    BlendMode = (BlendMode)f.readShort();
                     Depth = f.readShort();
                     Unk4 = f.readShort();
                     Unk5 = f.readShort();
@@ -608,8 +632,8 @@ namespace Lumenati
                     o.writeInt(PlacementId);
                     o.writeInt(Unk1);
                     o.writeInt(NameId);
-                    o.writeShort(Unk2);
-                    o.writeShort(Unk3);
+                    o.writeShort((short)Flags);
+                    o.writeShort((short)BlendMode);
                     o.writeShort(Depth);
                     o.writeShort(Unk4);
                     o.writeShort(Unk5);
