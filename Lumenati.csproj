@@ -62,6 +62,7 @@
       <DependentUpon>AtlasForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DisplayObject.cs" />
+    <Compile Include="Font.cs" />
     <Compile Include="Lumen.cs" />
     <Compile Include="LumenEditor.cs" />
     <Compile Include="LumenShader.cs" />

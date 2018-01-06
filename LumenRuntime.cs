@@ -54,6 +54,120 @@ namespace Lumenati
         }
     }
 
+    public class RuntimeText
+    {
+        public int CharacterId;
+
+        Lumen.DynamicText Text;
+        LumenEditor Editor;
+
+        public string Content;
+
+        public RuntimeText(LumenEditor editor, Lumen.DynamicText text)
+        {
+            Editor = editor;
+            Text = text;
+            Content = Editor.lm.Strings[text.placeholderTextId];
+
+            CharacterId = Text.characterId;
+        }
+
+        float getLineLength(string line)
+        {
+            float lineLength = 0;
+
+            foreach (char c in line)
+            {
+                if (c == ' ')
+                {
+                    lineLength += Editor.Font.spaceWidth;
+                }
+                else if (Editor.Font.Glyphs.ContainsKey(c))
+                {
+                    Font.Glyph glyph = Editor.Font.Glyphs[c];
+
+                    lineLength += glyph.width + glyph.advance;
+                }
+            }
+
+            return lineLength;
+        }
+
+        float getTextLength(string text)
+        {
+            float length = 0;
+
+            var lines = text.Split('\n');
+            foreach (var line in lines)
+            {
+                float lineLength = getLineLength(line);
+
+                if (lineLength > length)
+                    length = lineLength;
+            }
+
+            return length;
+        }
+
+        public void Render()
+        {
+            var len = getTextLength(Content);
+
+            float x = 0;
+            float y = 0;
+
+            var verts = new List<Vector4>();
+            float scale = Text.size / Editor.Font.defaultSize;
+
+            GL.BindTexture(TextureTarget.Texture2D, Editor.Font.Texture.glId);
+            GL.Begin(PrimitiveType.Quads);
+
+            var lines = Content.Split('\n');
+            foreach (var line in lines)
+            {
+                if (Text.alignment == Lumen.DynamicText.Alignment.Right)
+                    x = (len - getLineLength(line)) * scale;
+                else if (Text.alignment == Lumen.DynamicText.Alignment.Center)
+                    x = (len - getLineLength(line)) * scale / 2;
+                else
+                    x = 0;
+
+                foreach (char c in line)
+                {
+                    if (c == ' ')
+                    {
+                        x += Editor.Font.spaceWidth * scale;
+                        continue;
+                    }
+
+                    // TODO: render box for missing glyphs?
+                    if (!Editor.Font.Glyphs.ContainsKey(c))
+                        continue;
+
+                    Font.Glyph glyph = Editor.Font.Glyphs[c];
+
+                    GL.TexCoord2(glyph.x / Editor.Font.Texture.width, glyph.y / Editor.Font.Texture.height);
+                    GL.Vertex2(x, y + glyph.yBearing * scale);
+
+                    GL.TexCoord2((glyph.x + glyph.width) / Editor.Font.Texture.width, glyph.y / Editor.Font.Texture.height);
+                    GL.Vertex2(x + glyph.width * scale, y + glyph.yBearing * scale);
+
+                    GL.TexCoord2((glyph.x + glyph.width) / Editor.Font.Texture.width, (glyph.y + glyph.height) / Editor.Font.Texture.height);
+                    GL.Vertex2(x + glyph.width * scale, y + (glyph.yBearing + glyph.height) * scale);
+
+                    GL.TexCoord2(glyph.x / Editor.Font.Texture.width, (glyph.y + glyph.height) / Editor.Font.Texture.height);
+                    GL.Vertex2(x, y + (glyph.yBearing + glyph.height) * scale);
+
+                    x += (glyph.width + glyph.advance) * scale;
+                }
+
+                y += Editor.Font.lineHeight * scale;
+            }
+            GL.End();
+        }
+    }
+
+
     public class RuntimeSprite
     {
         public bool Playing = true;
@@ -105,7 +219,13 @@ namespace Lumenati
                     obj = new DisplayObject();
                     obj.shape = Editor.GetRuntimeShapeByCharacterId(placement.CharacterId);
                     if (obj.shape == null)
+                    {
                         obj.sprite = Editor.GetRuntimeSpriteByCharacterId(placement.CharacterId);
+
+                        if (obj.sprite == null)
+                            obj.text = Editor.GetRuntimeTextByCharacterId(placement.CharacterId);
+                    }
+
 
                     if (placement.NameId != -1)
                         obj.name = Editor.lm.Strings[placement.NameId];
@@ -184,6 +304,8 @@ namespace Lumenati
                     obj.sprite.Render(newState);
                 else if (obj.shape != null)
                     obj.shape.Render();
+                else if (obj.text != null)
+                    obj.text.Render();
 
                 GL.PopMatrix();
             }

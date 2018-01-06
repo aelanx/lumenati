@@ -27,7 +27,9 @@ namespace Lumenati
         Dictionary<int, Nut> atlases = new Dictionary<int, Nut>();
         public List<RuntimeSprite> RuntimeSprites = new List<RuntimeSprite>();
         public List<RuntimeShape> RuntimeShapes = new List<RuntimeShape>();
+        public List<RuntimeText> RuntimeTexts = new List<RuntimeText>();
         public LumenShader Shader;
+        public Font Font;
 
         // mode shit
         public List<SelectedVertex> SelectedVerts = new List<SelectedVertex>();
@@ -42,13 +44,15 @@ namespace Lumenati
             filePath = Path.GetDirectoryName(filename);
             lm = new Lumen(filename);
             texlist = new Texlist(Path.Combine(filePath, "texlist.lst"));
+
             Shader = new LumenShader();
             Shader.EnableAttrib();
             GL.UseProgram(Shader.ProgramID);
             GL.Uniform4(Shader.uColorAdd, new Vector4(0, 0, 0, 0));
             GL.Uniform4(Shader.uColorMul, new Vector4(1, 1, 1, 1));
             GL.Uniform1(Shader.uTex, 0);
-            //GL.UseProgram(0);
+
+            Font = new Font(@"C:\s4explore\extract\data\ui\font\lumen\static\Folk\Folk.fgb");
 
             foreach (var sprite in lm.Sprites)
             {
@@ -60,6 +64,12 @@ namespace Lumenati
             {
                 var rs = new RuntimeShape(this, shape);
                 RuntimeShapes.Add(rs);
+            }
+
+            foreach (var text in lm.Texts)
+            {
+                var rs = new RuntimeText(this, text);
+                RuntimeTexts.Add(rs);
             }
 
             atlases.Clear();
@@ -127,6 +137,17 @@ namespace Lumenati
             {
                 if (shape.CharacterId == characterId)
                     return shape;
+            }
+
+            return null;
+        }
+
+        public RuntimeText GetRuntimeTextByCharacterId(int characterId)
+        {
+            foreach (var text in RuntimeTexts)
+            {
+                if (text.CharacterId == characterId)
+                    return text;
             }
 
             return null;

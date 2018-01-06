@@ -82,6 +82,7 @@ namespace Lumenati
 
         private void Application_Idle(object sender, EventArgs e)
         {
+            glControl.Invalidate();
 
             long renderTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             if ((renderTime - lastRenderTime) <= frameLength)
@@ -89,7 +90,6 @@ namespace Lumenati
 
             lastRenderTime = renderTime;
 
-            glControl.Invalidate();
             glControl.MakeCurrent();
             var ortho = Matrix4.CreateOrthographicOffCenter(
                 0,
