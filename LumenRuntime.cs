@@ -29,7 +29,6 @@ namespace Lumenati
                 var atlas = Editor.GetAtlas(graphic.AtlasId);
                 if (atlas != null)
                 {
-
                     GL.BindTexture(TextureTarget.Texture2D, atlas.glId);
                     if (atlas.type == PixelInternalFormat.CompressedRedRgtc1)
                         GL.Uniform1(Editor.Shader.uTexFmt, 1);
@@ -119,7 +118,16 @@ namespace Lumenati
             var verts = new List<Vector4>();
             float scale = Text.size / Editor.Font.defaultSize;
 
-            GL.BindTexture(TextureTarget.Texture2D, Editor.Font.Texture.glId);
+            var atlas = Editor.Font.Texture;
+            GL.BindTexture(TextureTarget.Texture2D, atlas.glId);
+            if (atlas.type == PixelInternalFormat.CompressedRedRgtc1)
+                GL.Uniform1(Editor.Shader.uTexFmt, 1);
+            else if (atlas.type == PixelInternalFormat.CompressedRgRgtc2)
+                GL.Uniform1(Editor.Shader.uTexFmt, 2);
+            else
+                GL.Uniform1(Editor.Shader.uTexFmt, 0);
+
+            GL.BindTexture(TextureTarget.Texture2D, atlas.glId);
             GL.Begin(PrimitiveType.Quads);
 
             var lines = Content.Split('\n');

@@ -36,9 +36,6 @@ namespace Lumenati
             texName = Path.Combine(Path.GetDirectoryName(filename), texName);
             Texture = new Nut(texName);
             Read(filename);
-
-            //Texture = new Nut(Plugin.GetAsset($"data/ui/font/lumen/static/{name}/{name}_00000000.nut"));
-            //Read(Plugin.GetAsset($"data/ui/font/lumen/static/{name}/{name}.fgb"));
         }
 
         public void Read(string filename)
