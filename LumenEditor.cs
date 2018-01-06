@@ -326,5 +326,30 @@ namespace Lumenati
                 }
             }
         }
+
+        public void StencilRect(Lumen.Rect rect)
+        {
+            //GL.UseProgram(0);
+            //GL.Enable(EnableCap.StencilTest);
+            //GL.StencilMask(0xFF);
+            //GL.StencilFunc(StencilFunction.Never, 1, 0xFF);
+            //GL.StencilOp(StencilOp.Replace, StencilOp.Keep, StencilOp.Keep);
+            //GL.ColorMask(false, false, false, false);
+            //GL.Clear(ClearBufferMask.StencilBufferBit);
+
+            //GL.Begin(PrimitiveType.Quads);
+            //GL.Vertex2(rect.Left, rect.Top);
+            //GL.Vertex2(rect.Right, rect.Top);
+            //GL.Vertex2(rect.Right, rect.Bottom);
+            //GL.Vertex2(rect.Left, rect.Bottom);
+            //GL.End();
+
+            //GL.StencilMask(0);
+            //GL.StencilFunc(StencilFunction.Equal, 1, 0xFF);
+            //GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
+            //GL.ColorMask(true, true, true, true);
+
+            //GL.UseProgram(Shader.ProgramID);
+        }
     }
 }

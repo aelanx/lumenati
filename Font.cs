@@ -19,19 +19,17 @@ namespace Lumenati
             public short width;
             public short height;
 
-            public char codePoint; // BIG ENDIAN?
+            public ushort codePoint; // BIG ENDIAN?
         }
 
         public float lineHeight;
         public float spaceWidth;
         public float defaultSize;
-        public Nut Texture { get; }
-        public Dictionary<char, Glyph> Glyphs { get; }
+        public Nut Texture;
+        public Dictionary<ushort, Glyph> Glyphs = new Dictionary<ushort, Glyph>();
 
         public Font(string filename)
         {
-            Glyphs = new Dictionary<char, Glyph>();
-
             var texName = Path.GetFileNameWithoutExtension(filename) + "_00000000.nut";
             texName = Path.Combine(Path.GetDirectoryName(filename), texName);
             Texture = new Nut(texName);
@@ -40,37 +38,34 @@ namespace Lumenati
 
         public void Read(string filename)
         {
-            using (var stream = new FileStream(filename, FileMode.Open))
-            using (var reader = new BinaryReader(stream))
+            var file = new InputBuffer(filename);
+            file.Endianness = Endian.Little;
+
+            var magic = file.readInt();
+            lineHeight = file.readShort();
+            spaceWidth = file.readShort();
+            var numGlyphs = file.readShort();
+            defaultSize = file.readShort();
+            file.skip(0x04); // pad
+
+            for (int i = 0; i < numGlyphs; i++)
             {
-                stream.Seek(0x04, SeekOrigin.Current); // "FGB\0"
-                lineHeight = reader.ReadInt16();
-                spaceWidth = reader.ReadInt16();
-                short numGlyphs = reader.ReadInt16();
-                defaultSize = reader.ReadInt16();
-                stream.Seek(0x04, SeekOrigin.Current); // pad
+                var glyph = new Glyph();
+                file.skip(0x04); // pad
+                glyph.x = file.readShort();
+                glyph.y = file.readShort();
+                glyph.advance = file.readShort();
+                glyph.unk1 = file.readShort();
+                glyph.unk2 = file.readShort();
+                glyph.xBearing = file.readShort();
+                glyph.yBearing = file.readShort();
+                glyph.unk4 = file.readShort();
+                glyph.width = file.readShort();
+                glyph.height = file.readShort();
+                glyph.codePoint = (ushort)file.readShortBE();
+                file.skip(0x06); // pad
 
-                for (int i = 0; i < numGlyphs; i++)
-                {
-                    var glyph = new Glyph();
-                    stream.Seek(0x04, SeekOrigin.Current); // pad
-                    glyph.x = reader.ReadInt16();
-                    glyph.y = reader.ReadInt16();
-                    glyph.advance = reader.ReadInt16();
-                    glyph.unk1 = reader.ReadInt16();
-                    glyph.unk2 = reader.ReadInt16();
-                    glyph.xBearing = reader.ReadInt16();
-                    glyph.yBearing = reader.ReadInt16();
-                    glyph.unk4 = reader.ReadInt16();
-                    glyph.width = reader.ReadInt16();
-                    glyph.height = reader.ReadInt16();
-                    glyph.codePoint = (char)reader.ReadInt16();
-                    stream.Seek(0x06, SeekOrigin.Current); // pad
-
-                    glyph.codePoint = (char)(((glyph.codePoint >> 8) & 0xFF) | (glyph.codePoint << 8));
-
-                    Glyphs.Add(glyph.codePoint, glyph);
-                }
+                Glyphs.Add(glyph.codePoint, glyph);
             }
         }
     }

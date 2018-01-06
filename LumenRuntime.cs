@@ -2,6 +2,7 @@
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
 
 namespace Lumenati
 {
@@ -24,6 +25,8 @@ namespace Lumenati
 
         public void Render()
         {
+            Editor.StencilRect(Bounds);
+
             foreach (var graphic in Shape.Graphics)
             {
                 var atlas = Editor.GetAtlas(graphic.AtlasId);
@@ -75,17 +78,17 @@ namespace Lumenati
         {
             float lineLength = 0;
 
-            foreach (char c in line)
+            foreach (ushort c in line)
             {
-                if (c == ' ')
+                if (Editor.Font.Glyphs.ContainsKey(c))
                 {
-                    lineLength += Editor.Font.spaceWidth;
-                }
-                else if (Editor.Font.Glyphs.ContainsKey(c))
-                {
-                    Font.Glyph glyph = Editor.Font.Glyphs[c];
+                    var glyph = Editor.Font.Glyphs[c];
 
                     lineLength += glyph.width + glyph.advance;
+                }
+                else if (c == ' ')
+                {
+                    lineLength += Editor.Font.spaceWidth;
                 }
             }
 
@@ -133,14 +136,17 @@ namespace Lumenati
             var lines = Content.Split('\n');
             foreach (var line in lines)
             {
-                if (Text.alignment == Lumen.DynamicText.Alignment.Right)
+                if (Text.alignment == Lumen.TextAlignment.Right)
                     x = (len - getLineLength(line)) * scale;
-                else if (Text.alignment == Lumen.DynamicText.Alignment.Center)
-                    x = (len - getLineLength(line)) * scale / 2;
+                else if (Text.alignment == Lumen.TextAlignment.Center)
+                {
+                    var l = getLineLength(line);
+                    x = (len - getLineLength(line)) / 2 * scale;
+                }
                 else
                     x = 0;
 
-                foreach (char c in line)
+                foreach (ushort c in line)
                 {
                     if (c == ' ')
                     {
@@ -152,7 +158,7 @@ namespace Lumenati
                     if (!Editor.Font.Glyphs.ContainsKey(c))
                         continue;
 
-                    Font.Glyph glyph = Editor.Font.Glyphs[c];
+                    var glyph = Editor.Font.Glyphs[c];
 
                     GL.TexCoord2(glyph.x / Editor.Font.Texture.width, glyph.y / Editor.Font.Texture.height);
                     GL.Vertex2(x, y + glyph.yBearing * scale);
@@ -196,18 +202,45 @@ namespace Lumenati
             CharacterId = Sprite.CharacterId;
         }
 
+        public void GotoLabel(string txt)
+        {
+            for (int keyframeId = 0; keyframeId < Sprite.labels.Count; keyframeId++)
+            {
+                var label = Sprite.labels[keyframeId];
+                if (Editor.lm.Strings[label.NameId] == txt)
+                {
+                    handleFrame(Sprite.Keyframes[keyframeId]);
+                    CurrentFrame = label.StartFrame;
+                    return;
+                }
+            }
+        }
+
+        public RuntimeSprite SearchChild(string name)
+        {
+            foreach (var obj in DisplayList.Values)
+            {
+                if (obj.name == name)
+                    return obj.sprite;
+
+                if (obj.sprite != null)
+                {
+                    var r = obj.sprite.SearchChild(name);
+                    if (r != null)
+                        return r;
+                }
+            }
+
+            return null;
+        }
+
         public void Stop()
         {
             Playing = false;
         }
 
-        public void Update()
+        void handleFrame(Lumen.Sprite.Frame frame)
         {
-            if (!Playing)
-                return;
-
-            var frame = Sprite.Frames[CurrentFrame];
-
             foreach (var removal in frame.Removals)
             {
                 if (DisplayList.ContainsKey(removal.Depth))
@@ -268,6 +301,14 @@ namespace Lumenati
                 if (action.ActionId == 0)
                     Stop();
             }
+        }
+
+        public void Update()
+        {
+            if (!Playing)
+                return;
+
+            handleFrame(Sprite.Frames[CurrentFrame]);
 
             CurrentFrame++;
             CurrentFrame %= Sprite.Frames.Count;

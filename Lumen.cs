@@ -458,24 +458,24 @@ namespace Lumenati
             }
         }
 
+        public enum TextAlignment : short
+        {
+            Left = 0,
+            Right = 1,
+            Center = 2
+        }
+
         public struct DynamicText
         {
-            public enum Alignment : short
-            {
-                Left = 0,
-                Right = 1,
-                Center = 2
-            }
-
             public int characterId;
             public int unk1;
             public int placeholderTextId;
             public int unk2;
-            public int colorId;
+            public int strokeColorId;
             public int unk3;
             public int unk4;
             public int unk5;
-            public Alignment alignment;
+            public TextAlignment alignment;
             public short unk6;
             public int unk7;
             public int unk8;
@@ -496,11 +496,11 @@ namespace Lumenati
                 unk1 = f.readInt();
                 placeholderTextId = f.readInt();
                 unk2 = f.readInt();
-                colorId = f.readInt();
+                strokeColorId = f.readInt();
                 unk3 = f.readInt();
                 unk4 = f.readInt();
                 unk5 = f.readInt();
-                alignment = (Alignment)f.readShort();
+                alignment = (TextAlignment)f.readShort();
                 unk6 = f.readShort();
                 unk7 = f.readInt();
                 unk8 = f.readInt();
@@ -520,7 +520,7 @@ namespace Lumenati
                 o.writeInt(unk1);
                 o.writeInt(placeholderTextId);
                 o.writeInt(unk2);
-                o.writeInt(colorId);
+                o.writeInt(strokeColorId);
                 o.writeInt(unk3);
                 o.writeInt(unk4);
                 o.writeInt(unk5);
@@ -579,7 +579,7 @@ namespace Lumenati
                 public short Depth;
                 public short Unk4;
 
-                public short Unk5;
+                public short ThisFrameId;
                 public short Unk6;
                 public ushort PositionFlags;
                 public short PositionId;
@@ -606,7 +606,7 @@ namespace Lumenati
                     BlendMode = (BlendMode)f.readShort();
                     Depth = f.readShort();
                     Unk4 = f.readShort();
-                    Unk5 = f.readShort();
+                    ThisFrameId = f.readShort();
                     Unk6 = f.readShort();
                     PositionFlags = (ushort)f.readShort();
                     PositionId = f.readShort();
@@ -636,7 +636,7 @@ namespace Lumenati
                     o.writeShort((short)BlendMode);
                     o.writeShort(Depth);
                     o.writeShort(Unk4);
-                    o.writeShort(Unk5);
+                    o.writeShort(ThisFrameId);
                     o.writeShort(Unk6);
                     o.writeShort((short)PositionFlags);
                     o.writeShort(PositionId);
@@ -1114,10 +1114,10 @@ namespace Lumenati
                             float y = f.readFloat();
 
                             var mat = new Matrix4(
-                                a, b, 0, 0,
-                                c, d, 0, 0,
-                                x, y, 1, 0,
-                                0, 0, 0, 1
+                                a, c, 0, 0,
+                                b, d, 0, 0,
+                                0, 0, 1, 0,
+                                x, y, 0, 1
                             );
 
                             Transforms.Add(mat);
