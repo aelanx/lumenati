@@ -10,9 +10,9 @@ namespace Lumenati
 {
     public class DisplayObject
     {
-        public RuntimeShape shape;
-        public RuntimeSprite sprite;
-        public RuntimeText text;
+        public DisplayShape shape;
+        public DisplaySprite sprite;
+        public DisplayText text;
 
         // unlike swf, I don't think lm uses depth as the displaylist key.
         // Not positive, so fuck it.

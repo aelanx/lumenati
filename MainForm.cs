@@ -69,11 +69,11 @@ namespace Lumenati
 
         bool ShiftHeld = false;
 
-        RuntimeSprite SelectedSprite = null;
+        DisplaySprite SelectedSprite = null;
 
         Lumen.Shape SelectedShape = null;
         List<Lumen.Graphic> SelectedGraphics = new List<Lumen.Graphic>();
-        RuntimeSprite rootMc;
+        DisplaySprite rootMc;
 
         public MainForm()
         {
@@ -113,7 +113,7 @@ namespace Lumenati
             GL.PushMatrix();
             GL.LoadIdentity();
 
-            //GL.Translate(ViewportPosition);
+            GL.Translate(ViewportPosition);
             GL.Scale(ViewportZoom, ViewportZoom, 0);
 
             GL.UseProgram(Editor.Shader.ProgramID);
@@ -192,6 +192,10 @@ namespace Lumenati
             }
 
             rootMc = Editor.RuntimeSprites[Editor.RuntimeSprites.Count - 1];
+            rootMc.GotoLabel("init");
+            rootMc.SearchChild("hit_02").Visible = false;
+            //rootMc.GotoLabel("init");
+            //rootMc.Stop();
             frameLength = 1000f / Editor.lm.properties.framerate;
 
             EnableControls();

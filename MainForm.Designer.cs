@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.glControl = new OpenTK.GLControl();
+            this.glControl = new OpenTK.GLControl(new OpenTK.Graphics.GraphicsMode(OpenTK.Graphics.ColorFormat.Empty, 0, 8));
             this.numericUpDownAtlasId = new System.Windows.Forms.NumericUpDown();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();

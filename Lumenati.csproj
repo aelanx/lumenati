@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -62,6 +63,8 @@
       <DependentUpon>AtlasForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DisplayObject.cs" />
+    <Compile Include="DisplayObjects\DisplayShape.cs" />
+    <Compile Include="DisplayObjects\DisplayText.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="Lumen.cs" />
     <Compile Include="LumenEditor.cs" />
@@ -77,7 +80,7 @@
     <Compile Include="Nut.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LumenRuntime.cs" />
+    <Compile Include="DisplayObjects\DisplaySprite.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="Texlist.cs" />
     <EmbeddedResource Include="AtlasForm.resx">
@@ -94,6 +97,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

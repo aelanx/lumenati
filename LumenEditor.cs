@@ -25,9 +25,9 @@ namespace Lumenati
         public Lumen lm;
         public Texlist texlist;
         Dictionary<int, Nut> atlases = new Dictionary<int, Nut>();
-        public List<RuntimeSprite> RuntimeSprites = new List<RuntimeSprite>();
-        public List<RuntimeShape> RuntimeShapes = new List<RuntimeShape>();
-        public List<RuntimeText> RuntimeTexts = new List<RuntimeText>();
+        public List<DisplaySprite> RuntimeSprites = new List<DisplaySprite>();
+        public List<DisplayShape> RuntimeShapes = new List<DisplayShape>();
+        public List<DisplayText> RuntimeTexts = new List<DisplayText>();
         public LumenShader Shader;
         public Font Font;
 
@@ -56,19 +56,19 @@ namespace Lumenati
 
             foreach (var sprite in lm.Sprites)
             {
-                var rs = new RuntimeSprite(this, sprite);
+                var rs = new DisplaySprite(this, sprite);
                 RuntimeSprites.Add(rs);
             }
 
             foreach (var shape in lm.Shapes)
             {
-                var rs = new RuntimeShape(this, shape);
+                var rs = new DisplayShape(this, shape);
                 RuntimeShapes.Add(rs);
             }
 
             foreach (var text in lm.Texts)
             {
-                var rs = new RuntimeText(this, text);
+                var rs = new DisplayText(this, text);
                 RuntimeTexts.Add(rs);
             }
 
@@ -120,7 +120,7 @@ namespace Lumenati
             return null;
         }
 
-        public RuntimeSprite GetRuntimeSpriteByCharacterId(int characterId)
+        public DisplaySprite GetRuntimeSpriteByCharacterId(int characterId)
         {
             foreach (var sprite in RuntimeSprites)
             {
@@ -131,7 +131,7 @@ namespace Lumenati
             return null;
         }
 
-        public RuntimeShape GetRuntimeShapeByCharacterId(int characterId)
+        public DisplayShape GetRuntimeShapeByCharacterId(int characterId)
         {
             foreach (var shape in RuntimeShapes)
             {
@@ -142,7 +142,7 @@ namespace Lumenati
             return null;
         }
 
-        public RuntimeText GetRuntimeTextByCharacterId(int characterId)
+        public DisplayText GetRuntimeTextByCharacterId(int characterId)
         {
             foreach (var text in RuntimeTexts)
             {
