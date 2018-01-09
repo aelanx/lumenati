@@ -195,6 +195,13 @@ namespace Lumenati
                 data.Add((byte)c[i]);
         }
 
+        public void writeStringUtf8(string str)
+        {
+            var bytes = Encoding.UTF8.GetBytes(str);
+            foreach (var b in bytes)
+                data.Add(b);
+        }
+
         public void writeInt(int d)
         {
             if (Endianness == Endian.Big)

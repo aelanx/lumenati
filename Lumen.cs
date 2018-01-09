@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics;
+using System.IO;
 
 namespace Lumenati
 {
@@ -46,8 +47,8 @@ namespace Lumenati
 
         public enum PlaceFlag : short
         {
-            Move = 0x01,
-            Place = 0x02
+            Place = 0x01,
+            Move = 0x02
         }
 
         public enum BlendMode : short
@@ -98,6 +99,8 @@ namespace Lumenati
 
             public void Write(OutputBuffer o)
             {
+                Console.WriteLine($"unk_{(int)Type:X4} (size=0x{Size * 4:X4}) // offset=0x{o.Size:X2}\n");
+
                 o.writeInt((int)Type);
                 o.writeInt(Size);
                 o.write(Data);
@@ -151,6 +154,21 @@ namespace Lumenati
 
             public void Write(OutputBuffer o)
             {
+                Console.WriteLine($"Properties {{ // offset=0x{o.Size:X2}");
+                Console.WriteLine($"\tunk0: 0x{unk0:X8}");
+                Console.WriteLine($"\tunk1: 0x{unk1:X8}");
+                Console.WriteLine($"\tunk2: 0x{unk2:X8}");
+                Console.WriteLine($"\tmaxCharacterId: 0x{maxCharacterId:X8}");
+                Console.WriteLine($"\tunk4: 0x{unk4:X8}");
+                Console.WriteLine($"\tmaxCharacterId2: 0x{maxCharacterId2:X2}");
+                Console.WriteLine($"\tmaxDepth: 0x{maxDepth:X4}");
+                Console.WriteLine($"\tunk7: 0x{unk7:X4}");
+                Console.WriteLine($"\tframerate: {framerate}");
+                Console.WriteLine($"\tdimensions: {width}x{height}");
+                Console.WriteLine($"\tunk8: 0x{unk8:X8}");
+                Console.WriteLine($"\tunk9: 0x{unk9:X8}");
+                Console.WriteLine("}\n");
+
                 o.writeInt((int)TagType.Properties);
                 o.writeInt(12);
 
@@ -202,6 +220,16 @@ namespace Lumenati
 
             public void Write(OutputBuffer o)
             {
+                Console.WriteLine($"Properties2 {{ // offset=0x{o.Size:X2}");
+                Console.WriteLine($"\tnumShapes: 0x{numShapes:X8}");
+                Console.WriteLine($"\tunk1: 0x{unk1:X8}");
+                Console.WriteLine($"\tnumSprites: 0x{numSprites:X8}");
+                Console.WriteLine($"\tunk3: 0x{unk3:X8}");
+                Console.WriteLine($"\tnumTexts: 0x{numTexts:X8}");
+                Console.WriteLine($"\tunk5: 0x{unk5:X8}");
+                Console.WriteLine($"\tunk6: 0x{unk6:X8}");
+                Console.WriteLine($"\tunk7: 0x{unk7:X8}");
+                Console.WriteLine("}\n");
                 o.writeInt((int)TagType.Defines);
                 o.writeInt(8);
 
@@ -215,58 +243,6 @@ namespace Lumenati
                 o.writeInt((int)unk7);
             }
         }
-
-        //public class Color
-        //{
-        //    public float R;
-        //    public float G;
-        //    public float B;
-        //    public float A;
-
-        //    public Color()
-        //    {
-        //    }
-
-        //    public Color(float r, float g, float b, float a)
-        //    {
-        //        R = r;
-        //        G = g;
-        //        B = b;
-        //        A = a;
-        //    }
-
-        //    public Color(short r, short g, short b, short a)
-        //    {
-        //        R = r / 256.0f;
-        //        G = g / 256.0f;
-        //        B = b / 256.0f;
-        //        A = a / 256.0f;
-        //    }
-
-        //    public Color(uint rgba)
-        //    {
-        //        R = ((rgba >> 24) & 0xFF) / 255.0f;
-        //        G = ((rgba >> 16) & 0xFF) / 255.0f;
-        //        B = ((rgba >> 8) & 0xFF) / 255.0f;
-        //        A = ((rgba) & 0xFF) / 255.0f;
-        //    }
-
-        //    public override string ToString()
-        //    {
-        //        return $"[{R}, {G}, {B}, {A}]";
-        //    }
-
-        //    public override bool Equals(object obj)
-        //    {
-        //        var other = (Color)obj;
-        //        return (R == other.R && G == other.G && B == other.B && A == other.A);
-        //    }
-
-        //    public override int GetHashCode()
-        //    {
-        //        return (int)R ^ (int)G ^ (int)B ^ (int)A;
-        //    }
-        //}
 
         public class Rect
         {
@@ -285,6 +261,10 @@ namespace Lumenati
                 Bottom = b;
             }
 
+            public override string ToString()
+            {
+                return $"[{Left}, {Top}, {Right}, {Bottom}]";
+            }
         }
 
         public struct TextureAtlas
@@ -309,6 +289,11 @@ namespace Lumenati
                 Y = y;
                 U = u;
                 V = v;
+            }
+
+            public override string ToString()
+            {
+                return $"xy: [{X}, {Y}], uv: [{U}, {V}]";
             }
         }
 
@@ -374,37 +359,6 @@ namespace Lumenati
                     f.skip(0x02);
                 }
             }
-
-            public void Write(OutputBuffer o)
-            {
-                OutputBuffer tag = new OutputBuffer();
-                tag.writeInt(AtlasId);
-                tag.writeShort((short)FillType);
-                tag.writeShort((short)Verts.Length);
-                tag.writeInt(Indices.Length);
-
-                foreach (var vert in Verts)
-                {
-                    tag.writeFloat(vert.X);
-                    tag.writeFloat(vert.Y);
-                    tag.writeFloat(vert.U);
-                    tag.writeFloat(vert.V);
-                }
-
-                foreach (var index in Indices)
-                {
-                    tag.writeShort((short)index);
-                }
-
-                if ((Indices.Length % 2) != 0)
-                {
-                    tag.writeShort(0);
-                }
-
-                o.writeInt((int)TagType.Graphic);
-                o.writeInt(tag.Size / 4);
-                o.write(tag);
-            }
         }
 
         public class Shape
@@ -414,7 +368,7 @@ namespace Lumenati
             public int BoundsId;
             public int Unk3;
 
-            public Graphic[] Graphics = new Graphic[0];
+            public Graphic[] Graphics;
 
             public Shape() { }
 
@@ -437,23 +391,6 @@ namespace Lumenati
                 {
                     f.skip(0x08); // graphic tag header
                     Graphics[i] = new Graphic(f);
-                }
-            }
-
-            public void Write(OutputBuffer o)
-            {
-                o.writeInt((int)TagType.Shape);
-                o.writeInt(5);
-
-                o.writeInt(CharacterId);
-                o.writeInt(Unk1);
-                o.writeInt(BoundsId);
-                o.writeInt(Unk3);
-                o.writeInt(Graphics.Length);
-
-                foreach (var graphic in Graphics)
-                {
-                    graphic.Write(o);
                 }
             }
         }
@@ -578,16 +515,15 @@ namespace Lumenati
                 public BlendMode BlendMode;
                 public short Depth;
                 public short Unk4;
-
-                public short ThisFrameId;
+                public short Unk5;
                 public short Unk6;
                 public ushort PositionFlags;
                 public short PositionId;
                 public int ColorMultId;
                 public int ColorAddId;
 
-                public UnhandledTag ColorMatrix = null;
-                public UnhandledTag UnkF014 = null;
+                public UnhandledTag ColorMatrix;
+                public UnhandledTag UnkF014;
 
                 public PlaceObject() { }
 
@@ -606,7 +542,7 @@ namespace Lumenati
                     BlendMode = (BlendMode)f.readShort();
                     Depth = f.readShort();
                     Unk4 = f.readShort();
-                    ThisFrameId = f.readShort();
+                    Unk5 = f.readShort();
                     Unk6 = f.readShort();
                     PositionFlags = (ushort)f.readShort();
                     PositionId = f.readShort();
@@ -636,7 +572,7 @@ namespace Lumenati
                     o.writeShort((short)BlendMode);
                     o.writeShort(Depth);
                     o.writeShort(Unk4);
-                    o.writeShort(ThisFrameId);
+                    o.writeShort(Unk5);
                     o.writeShort(Unk6);
                     o.writeShort((short)PositionFlags);
                     o.writeShort(PositionId);
@@ -1205,17 +1141,22 @@ namespace Lumenati
             OutputBuffer tag = new OutputBuffer();
             tag.writeInt(Strings.Count);
 
-            foreach (var symbol in Strings)
+            Console.WriteLine($"Strings = [ // offset=0x{o.Size:X2}");
+            for (int i = 0; i < Strings.Count; i++)
             {
-                tag.writeInt(symbol.Length);
-                tag.writeString(symbol);
+                var str = Strings[i];
+
+                Console.WriteLine($"\t0x{i:X3}: \"{str}\"");
+                tag.writeInt(str.Length);
+                tag.writeStringUtf8(str);
 
                 int padSize = 4 - (tag.Size % 4);
-                for (int i = 0; i < padSize; i++)
+                for (int j = 0; j < padSize; j++)
                 {
                     tag.writeByte(0);
                 }
             }
+            Console.WriteLine("]\n");
 
             o.writeInt((int)TagType.Symbols);
             o.writeInt(tag.Size / 4);
@@ -1224,85 +1165,181 @@ namespace Lumenati
 
         void writeColors(OutputBuffer o)
         {
+            Console.WriteLine($"Colors = [ // offset=0x{o.Size:X2}");
+
             o.writeInt((int)TagType.Colors);
             o.writeInt(Colors.Count * 2 + 1);
             o.writeInt(Colors.Count);
 
-            foreach (var color in Colors)
+            for (int i = 0; i < Colors.Count; i++)
             {
+                var color = Colors[i];
+                Console.WriteLine($"\t0x{i:X3}: #{(byte)(color.X * 255):X2}{(byte)(color.Z * 255):X2}{(byte)(color.Y * 255):X2}, {(byte)(color.W * 255):X2} // offset=0x{o.Size:X2}");
                 o.writeShort((short)(color.X * 256));
                 o.writeShort((short)(color.Y * 256));
                 o.writeShort((short)(color.Z * 256));
                 o.writeShort((short)(color.W * 256));
             }
+            Console.WriteLine("]\n");
         }
 
         void writePositions(OutputBuffer o)
         {
+            Console.WriteLine($"Positions = [ // offset=0x{o.Size:X2}");
+
             o.writeInt((int)TagType.Positions);
             o.writeInt(Positions.Count * 2 + 1);
             o.writeInt(Positions.Count);
 
-            foreach (var position in Positions)
+            for (int i = 0; i < Positions.Count; i++)
             {
+                var position = Positions[i];
+                Console.WriteLine($"\t0x{i:X4}: [{position.X}, {position.Y}] // offset=0x{o.Size:X2}");
                 o.writeFloat(position.X);
                 o.writeFloat(position.Y);
             }
+            Console.WriteLine("]\n");
         }
 
         void writeTransforms(OutputBuffer o)
         {
+            Console.WriteLine($"Transforms = [ // offset=0x{o.Size:X2}");
+
             o.writeInt((int)TagType.Transforms);
             o.writeInt(Transforms.Count * 6 + 1);
             o.writeInt(Transforms.Count);
 
-            foreach (var transform in Transforms)
+            for (int i = 0; i < Transforms.Count; i++)
             {
+                var transform = Transforms[i];
+
+                Console.WriteLine($"\t[{transform.M11:f2}, {transform.M21:f2}] // offset=0x{o.Size:X2}");
+                Console.WriteLine($"\t[{transform.M12:f2}, {transform.M22:f2}]");
+                Console.WriteLine($"\t[{transform.M41:f2}, {transform.M42:f2}]\n");
                 o.writeFloat(transform.M11);
-                o.writeFloat(transform.M12);
                 o.writeFloat(transform.M21);
+                o.writeFloat(transform.M12);
                 o.writeFloat(transform.M22);
-                o.writeFloat(transform.M31);
-                o.writeFloat(transform.M32);
+                o.writeFloat(transform.M41);
+                o.writeFloat(transform.M42);
             }
+
+            Console.WriteLine("]\n");
         }
 
         void writeBounds(OutputBuffer o)
         {
+            Console.WriteLine($"Bounds = [ // offset=0x{o.Size:X2}");
+
             o.writeInt((int)TagType.Bounds);
             o.writeInt(Bounds.Count * 4 + 1);
             o.writeInt(Bounds.Count);
 
-            foreach (var extent in Bounds)
+            for (int i = 0; i < Bounds.Count; i++)
             {
-                o.writeFloat(extent.Left);
-                o.writeFloat(extent.Top);
-                o.writeFloat(extent.Right);
-                o.writeFloat(extent.Bottom);
+                var bb = Bounds[i];
+                Console.WriteLine($"\t0x{i:X2}: {bb} // offset=0x{o.Size:X2}");
+
+                o.writeFloat(bb.Left);
+                o.writeFloat(bb.Top);
+                o.writeFloat(bb.Right);
+                o.writeFloat(bb.Bottom);
             }
+
+            Console.WriteLine("]\n");
         }
 
         void writeAtlases(OutputBuffer o)
         {
+            Console.WriteLine($"TextureAtlases = [ // offset=0x{o.Size:X2}");
+
             o.writeInt((int)TagType.TextureAtlases);
             o.writeInt(Atlases.Count * 4 + 1);
             o.writeInt(Atlases.Count);
 
-            foreach (var atlas in Atlases)
+            for (int i = 0; i < Atlases.Count; i++)
             {
+                var atlas = Atlases[i];
+                Console.WriteLine($"\tatlas 0x{atlas.id:X2} {{  // offset=0x{o.Size:X2}");
+                Console.WriteLine($"\t\t\"name\": \"{Strings[atlas.nameId]}\"");
+                Console.WriteLine($"\t\tdimensions: {atlas.width}x{atlas.height}");
+                Console.WriteLine("\t}\n");
+
                 o.writeInt(atlas.id);
                 o.writeInt(atlas.nameId);
                 o.writeFloat(atlas.width);
                 o.writeFloat(atlas.height);
             }
+            Console.WriteLine("]\n");
         }
 
         void writeShapes(OutputBuffer o)
         {
-            foreach (var shape in Shapes) shape.Write(o);
-            {
+            Console.WriteLine($"Shapes = [ // offset=0x{o.Size:X2}");
 
+            for (int i = 0; i < Shapes.Count; i++)
+            {
+                var shape = Shapes[i];
+
+                Console.WriteLine($"\tCharacterId: 0x{shape.CharacterId:X4} // offset=0x{o.Size:X2}");
+                Console.WriteLine($"\tUnk1: 0x{shape.Unk1:X8}");
+                Console.WriteLine($"\tBounds: {Bounds[shape.BoundsId]} (0x{shape.BoundsId:X2})");
+                Console.WriteLine($"\tUnk3: 0x{shape.Unk3:X8}");
+                Console.WriteLine("\t[");
+
+                o.writeInt((int)TagType.Shape);
+                o.writeInt(5);
+
+                o.writeInt(shape.CharacterId);
+                o.writeInt(shape.Unk1);
+                o.writeInt(shape.BoundsId);
+                o.writeInt(shape.Unk3);
+                o.writeInt(shape.Graphics.Length);
+
+
+                foreach (var graphic in shape.Graphics)
+                {
+                    Console.WriteLine($"\t\tGraphic {{ // offset=0x{o.Size:X2}");
+                    Console.WriteLine($"\t\t\tAtlasId: {graphic.AtlasId}");
+                    Console.WriteLine($"\t\t\tFillType: {graphic.FillType} (0x{(short)graphic.FillType:X2})");
+
+                    var graphicTag = new OutputBuffer();
+                    graphicTag.writeInt(graphic.AtlasId);
+                    graphicTag.writeShort((short)graphic.FillType);
+                    graphicTag.writeShort((short)graphic.Verts.Length);
+                    graphicTag.writeInt(graphic.Indices.Length);
+
+                    foreach (var vert in graphic.Verts)
+                    {
+                        Console.WriteLine($"\t\t\t\t{vert}");
+                        graphicTag.writeFloat(vert.X);
+                        graphicTag.writeFloat(vert.Y);
+                        graphicTag.writeFloat(vert.U);
+                        graphicTag.writeFloat(vert.V);
+                    }
+
+                    Console.Write("\t\t\t[");
+                    foreach (var index in graphic.Indices)
+                    {
+                        Console.Write($"{index}, ");
+                        graphicTag.writeShort((short)index);
+                    }
+                    Console.WriteLine("]");
+
+                    Console.WriteLine("\t\t}\n");
+
+                    if ((graphic.Indices.Length % 2) != 0)
+                        graphicTag.writeShort(0);
+
+                    o.writeInt((int)TagType.Graphic);
+                    o.writeInt(graphicTag.Size / 4);
+                    o.write(graphicTag);
+                }
+
+                Console.WriteLine("\t]\n");
             }
+
+            Console.WriteLine("]\n");
         }
 
         void writeSprites(OutputBuffer o)
@@ -1323,9 +1360,14 @@ namespace Lumenati
 
         #endregion
 
-        public byte[] Rebuild()
+        public byte[] Rebuild(bool dump = false)
         {
             OutputBuffer o = new OutputBuffer();
+
+            TextWriter oldOut = Console.Out;
+            MemoryStream ostrm = new MemoryStream(0xA00000);
+            StreamWriter writer = new StreamWriter(ostrm);
+            Console.SetOut(writer);
 
             // TODO: write correct filesize in header.
             // It isn't checked by the game, but what the hell, right?
@@ -1368,6 +1410,15 @@ namespace Lumenati
             {
                 o.writeByte(0);
             }
+
+            if (dump)
+            {
+                writer.Flush();
+                using (var filestream = new FileStream("dump.txt", FileMode.Create))
+                    ostrm.WriteTo(filestream);
+            }
+
+            Console.SetOut(oldOut);
 
             return o.getBytes();
         }

@@ -40,12 +40,18 @@ namespace Lumenati
 
         public void LoadFile(string filename)
         {
+            filename = Path.Combine(Preferences.Instance.ExtractPath, filename);
             originalFilename = filename;
             filePath = Path.GetDirectoryName(filename);
             lm = new Lumen(filename);
             texlist = new Texlist(Path.Combine(filePath, "texlist.lst"));
 
-            Shader = new LumenShader();
+            var data = lm.Rebuild(true);
+            var stupidFilename = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename) + "_out.lm");
+            using (var fs = new FileStream(stupidFilename, FileMode.Create))
+                fs.Write(data, 0, data.Length);
+
+                Shader = new LumenShader();
             Shader.EnableAttrib();
             GL.UseProgram(Shader.ProgramID);
             GL.Uniform4(Shader.uColorAdd, new Vector4(0, 0, 0, 0));

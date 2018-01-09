@@ -78,6 +78,7 @@ namespace Lumenati
         public MainForm()
         {
             InitializeComponent();
+            Preferences.Init();
         }
 
         private void Application_Idle(object sender, EventArgs e)
@@ -121,6 +122,10 @@ namespace Lumenati
             if (SelectedSprite != null)
             {
                 GL.Translate(glControl.ClientRectangle.Width / 2 / ViewportZoom, glControl.ClientRectangle.Height / 2 / ViewportZoom, 0);
+                //if (SelectedSprite.CharacterId == 44 && SelectedSprite.CurrentFrame == 239)
+                //{
+                //    SelectedSprite.CurrentFrame = 0;
+                //}
                 SelectedSprite.Update();
                 SelectedSprite.Render(new RenderState());
             }
@@ -192,10 +197,26 @@ namespace Lumenati
             }
 
             rootMc = Editor.RuntimeSprites[Editor.RuntimeSprites.Count - 1];
-            rootMc.GotoLabel("init");
-            rootMc.SearchChild("hit_02").Visible = false;
-            //rootMc.GotoLabel("init");
-            //rootMc.Stop();
+            rootMc.Init();
+
+            if (filename.EndsWith("stage.lm"))
+            {
+                rootMc.GotoLabel("in_end");
+                rootMc.Stop();
+
+                rootMc.GetPathMC("img_group.create_mc").Visible = false;
+                rootMc.GetPathMC("title_group.return_btn.press_area").Visible = false;
+            }
+
+            //rootMc.GetPathMC("title_group").Visible = false;
+            //rootMc.GetPathMC("btn_01.anim.txt_mc").Visible = false;
+            //rootMc.SearchChild("hit_01").Visible = true;
+            //rootMc.SearchChild("hit_02").Visible = false;
+
+            //rootMc.GotoLabel("read");
+            //rootMc.SearchChild("title_group").Stop();
+
+
             frameLength = 1000f / Editor.lm.properties.framerate;
 
             EnableControls();
@@ -223,8 +244,8 @@ namespace Lumenati
         private void glControl1_Load(object sender, EventArgs e)
         {
 #if DEBUG
-            var name = "main";
-            loadFile($@"C:\s4explore\extract\data\ui\lumen\{name}\{name}.lm");
+            var name = "stage";
+            loadFile($@"data\ui\lumen\{name}\{name}.lm");
 #endif
             glControl.MouseWheel += glControl_MouseWheel;
 
@@ -518,6 +539,14 @@ namespace Lumenati
                     Editor.Mode = EditorMode.Vertex;
                 else
                     Editor.Mode = EditorMode.UV;
+            }
+
+            if (e.KeyCode == Keys.Space)
+            {
+                if (SelectedSprite != null)
+                {
+                    SelectedSprite.Playing = !SelectedSprite.Playing;
+                }
             }
 
             if (e.KeyCode == Keys.Left)

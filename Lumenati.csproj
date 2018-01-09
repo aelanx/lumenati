@@ -78,6 +78,7 @@
     <Compile Include="GTX.cs" />
     <Compile Include="IO.cs" />
     <Compile Include="Nut.cs" />
+    <Compile Include="Preferences.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DisplayObjects\DisplaySprite.cs" />

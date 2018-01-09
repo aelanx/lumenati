@@ -58,6 +58,47 @@ namespace Lumenati
             return null;
         }
 
+        public DisplaySprite GetPathMC(string path)
+        {
+            var names = path.Split('.');
+            DisplaySprite currentSprite = this;
+
+            for (int i = 0; i < names.Length; i++)
+            {
+                var name = names[i];
+                var found = false;
+
+                foreach (var obj in currentSprite.DisplayList.Values)
+                {
+                    if (obj.name == name)
+                    {
+                        currentSprite = obj.sprite;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                    return null;
+            }
+
+            return currentSprite;
+        }
+
+        public void Init()
+        {
+            if (Sprite.Keyframes.Count == 0)
+                handleFrame(Sprite.Frames[0]);
+            else
+                handleFrame(Sprite.Keyframes[0]);
+
+            foreach (var child in DisplayList.Values)
+            {
+                if (child.sprite != null)
+                    child.sprite.Init();
+            }
+        }
+
         public void Stop()
         {
             Playing = false;
@@ -75,7 +116,7 @@ namespace Lumenati
             {
                 DisplayObject obj;
 
-                if (placement.Flags == Lumen.PlaceFlag.Place)
+                if (placement.Flags == Lumen.PlaceFlag.Move)
                 {
                     obj = DisplayList[placement.Depth];
                 }
@@ -129,13 +170,17 @@ namespace Lumenati
 
         public void Update()
         {
-            if (!Playing)
-                return;
-
+            if (Playing)
+            {
             handleFrame(Sprite.Frames[CurrentFrame]);
 
             CurrentFrame++;
             CurrentFrame %= Sprite.Frames.Count;
+
+            }
+
+            //if (CurrentFrame >= Sprite.Frames.Count)
+            //    Stop();
 
             foreach (var obj in DisplayList.Values)
             {
