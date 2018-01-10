@@ -170,14 +170,22 @@ namespace Lumenati
 
         public void Update()
         {
+#if ALMOST_CORRECT
             if (Playing)
             {
-            handleFrame(Sprite.Frames[CurrentFrame]);
+                handleFrame(Sprite.Frames[CurrentFrame]);
 
+                CurrentFrame++;
+                CurrentFrame %= Sprite.Frames.Count;
+            }
+#else
+            if (!Playing)
+                return;
+
+            handleFrame(Sprite.Frames[CurrentFrame]);
             CurrentFrame++;
             CurrentFrame %= Sprite.Frames.Count;
-
-            }
+#endif
 
             //if (CurrentFrame >= Sprite.Frames.Count)
             //    Stop();

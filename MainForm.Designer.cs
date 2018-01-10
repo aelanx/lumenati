@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.glControl = new OpenTK.GLControl(new OpenTK.Graphics.GraphicsMode(OpenTK.Graphics.ColorFormat.Empty, 0, 8));
+            this.glControl = new OpenTK.GLControl();
             this.numericUpDownAtlasId = new System.Windows.Forms.NumericUpDown();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,6 +44,7 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.shapeTree = new System.Windows.Forms.TreeView();
+            this.colorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAtlasId)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -87,7 +88,7 @@
             0,
             0});
             this.numericUpDownAtlasId.Name = "numericUpDownAtlasId";
-            this.numericUpDownAtlasId.Size = new System.Drawing.Size(275, 22);
+            this.numericUpDownAtlasId.Size = new System.Drawing.Size(274, 22);
             this.numericUpDownAtlasId.TabIndex = 5;
             this.numericUpDownAtlasId.ValueChanged += new System.EventHandler(this.numericUpDownAtlasId_ValueChanged);
             // 
@@ -158,7 +159,8 @@
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.atlasesToolStripMenuItem});
+            this.atlasesToolStripMenuItem,
+            this.colorsToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(47, 24);
             this.editToolStripMenuItem.Text = "&Edit";
@@ -166,8 +168,8 @@
             // atlasesToolStripMenuItem
             // 
             this.atlasesToolStripMenuItem.Name = "atlasesToolStripMenuItem";
-            this.atlasesToolStripMenuItem.Size = new System.Drawing.Size(140, 26);
-            this.atlasesToolStripMenuItem.Text = "Atlases...";
+            this.atlasesToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.atlasesToolStripMenuItem.Text = "&Atlases...";
             this.atlasesToolStripMenuItem.Click += new System.EventHandler(this.atlasesToolStripMenuItem_Click);
             // 
             // splitContainer1
@@ -235,9 +237,16 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.shapeTree.Location = new System.Drawing.Point(4, 33);
             this.shapeTree.Name = "shapeTree";
-            this.shapeTree.Size = new System.Drawing.Size(285, 470);
+            this.shapeTree.Size = new System.Drawing.Size(284, 470);
             this.shapeTree.TabIndex = 0;
             this.shapeTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            // 
+            // colorsToolStripMenuItem
+            // 
+            this.colorsToolStripMenuItem.Name = "colorsToolStripMenuItem";
+            this.colorsToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.colorsToolStripMenuItem.Text = "&Colors...";
+            this.colorsToolStripMenuItem.Click += new System.EventHandler(this.colorsToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -290,6 +299,7 @@
         private System.Windows.Forms.TreeView shapeTree;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ToolStripMenuItem colorsToolStripMenuItem;
     }
 }
 

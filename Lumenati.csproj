@@ -62,6 +62,12 @@
     <Compile Include="AtlasForm.Designer.cs">
       <DependentUpon>AtlasForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ColorEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ColorEditor.Designer.cs">
+      <DependentUpon>ColorEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="DisplayObject.cs" />
     <Compile Include="DisplayObjects\DisplayShape.cs" />
     <Compile Include="DisplayObjects\DisplayText.cs" />
@@ -86,6 +92,9 @@
     <Compile Include="Texlist.cs" />
     <EmbeddedResource Include="AtlasForm.resx">
       <DependentUpon>AtlasForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorEditor.resx">
+      <DependentUpon>ColorEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

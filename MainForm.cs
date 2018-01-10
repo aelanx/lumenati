@@ -117,7 +117,6 @@ namespace Lumenati
             GL.Translate(ViewportPosition);
             GL.Scale(ViewportZoom, ViewportZoom, 0);
 
-
             if (SelectedSprite != null)
             {
                 GL.UseProgram(Editor.Shader.ProgramID);
@@ -209,9 +208,13 @@ namespace Lumenati
                 rootMc.GetPathMC("title_group.return_btn.press_area").Visible = false;
             }
 
+            if (filename.EndsWith("main.lm"))
+            {
+                rootMc.SearchChild("hit_01").Visible = false;
+            }
+
             //rootMc.GetPathMC("title_group").Visible = false;
             //rootMc.GetPathMC("btn_01.anim.txt_mc").Visible = false;
-            //rootMc.SearchChild("hit_01").Visible = true;
             //rootMc.SearchChild("hit_02").Visible = false;
 
             //rootMc.GotoLabel("read");
@@ -569,6 +572,12 @@ namespace Lumenati
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void colorsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var colorEditor = new ColorEditor(Editor.lm.Colors);
+            colorEditor.Show();
         }
     }
 }
