@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Texlister.Properties {
+namespace Lumenati.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

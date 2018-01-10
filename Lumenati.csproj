@@ -7,8 +7,8 @@
     <ProjectGuid>{760AE48C-7CEE-4FC8-9188-A7A65B254D4A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Texlister</RootNamespace>
-    <AssemblyName>Texlister</AssemblyName>
+    <RootNamespace>Lumenati</RootNamespace>
+    <AssemblyName>Lumenati</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
