@@ -63,7 +63,7 @@
             this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.listView1.Location = new System.Drawing.Point(12, 12);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(221, 405);
+            this.listView1.Size = new System.Drawing.Size(221, 403);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -82,7 +82,7 @@
             this.tableLayoutPanel1.SetColumnSpan(this.pictureBox1, 3);
             this.pictureBox1.Location = new System.Drawing.Point(3, 253);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(364, 152);
+            this.pictureBox1.Size = new System.Drawing.Size(364, 149);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
@@ -306,7 +306,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(621, 429);
+            this.ClientSize = new System.Drawing.Size(621, 427);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.listView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
