@@ -117,10 +117,10 @@ namespace Lumenati
             GL.Translate(ViewportPosition);
             GL.Scale(ViewportZoom, ViewportZoom, 0);
 
-            GL.UseProgram(Editor.Shader.ProgramID);
 
             if (SelectedSprite != null)
             {
+                GL.UseProgram(Editor.Shader.ProgramID);
                 GL.Translate(glControl.ClientRectangle.Width / 2 / ViewportZoom, glControl.ClientRectangle.Height / 2 / ViewportZoom, 0);
                 //if (SelectedSprite.CharacterId == 44 && SelectedSprite.CurrentFrame == 239)
                 //{
@@ -129,8 +129,9 @@ namespace Lumenati
                 SelectedSprite.Update();
                 SelectedSprite.Render(new RenderState());
             }
-            else
+            else if (rootMc != null)
             {
+                GL.UseProgram(Editor.Shader.ProgramID);
                 rootMc.Update();
                 rootMc.Render(new RenderState());
             }
@@ -243,10 +244,10 @@ namespace Lumenati
 
         private void glControl1_Load(object sender, EventArgs e)
         {
-#if DEBUG
-            var name = "stage";
-            loadFile($@"data\ui\lumen\{name}\{name}.lm");
-#endif
+            var name = Preferences.Instance.StartupFile;
+            if (name != null)
+                loadFile($@"data\ui\lumen\{name}\{name}.lm");
+
             glControl.MouseWheel += glControl_MouseWheel;
 
             GL.ClearColor(Color.CornflowerBlue);

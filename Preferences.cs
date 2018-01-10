@@ -33,11 +33,27 @@ namespace Lumenati
             }
             else
             {
-                ExtractPath = @"C:\s4explore\extract";
-                StartupFile = "stage";
-
-                SaveToXML();
+                CreateXML();
             }
+        }
+
+        void CreateXML()
+        {
+            var res = MessageBox.Show("In order to load some vital files (fonts and whatnot), I'll need to use your Sm4shExplorer extract directory. Point me there?", "Select Extract Folder", MessageBoxButtons.YesNo);
+
+
+            if (res == DialogResult.Yes)
+            {
+                var fbd = new FolderBrowserDialog();
+                if (fbd.ShowDialog() == DialogResult.OK)
+                {
+                    ExtractPath = fbd.SelectedPath;
+                    SaveToXML();
+                    return;
+                }
+            }
+
+            MessageBox.Show("Okay, be that way. Just know that this probably isn't going to work correctly and I'm just gonna ask again at next startup.", "Wow...", MessageBoxButtons.OK);
         }
 
         void LoadFromXML()
