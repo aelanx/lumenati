@@ -46,19 +46,20 @@ namespace Lumenati
             lm = new Lumen(filename);
             texlist = new Texlist(Path.Combine(filePath, "texlist.lst"));
 
-            var data = lm.Rebuild(true);
-            var stupidFilename = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename) + "_out.lm");
-            using (var fs = new FileStream(stupidFilename, FileMode.Create))
-                fs.Write(data, 0, data.Length);
+            //var data = lm.Rebuild(true);
+            //var stupidFilename = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename) + "_out.lm");
+            //using (var fs = new FileStream(stupidFilename, FileMode.Create))
+            //    fs.Write(data, 0, data.Length);
 
-                Shader = new LumenShader();
+            Shader = new LumenShader();
             Shader.EnableAttrib();
             GL.UseProgram(Shader.ProgramID);
             GL.Uniform4(Shader.uColorAdd, new Vector4(0, 0, 0, 0));
             GL.Uniform4(Shader.uColorMul, new Vector4(1, 1, 1, 1));
             GL.Uniform1(Shader.uTex, 0);
 
-            Font = new Font(@"C:\s4explore\extract\data\ui\font\lumen\static\Folk\Folk.fgb");
+            var fontFilename = Path.Combine(Preferences.Instance.ExtractPath, @"data\ui\font\lumen\static\Folk\Folk.fgb");
+            Font = new Font(fontFilename);
 
             foreach (var sprite in lm.Sprites)
             {
