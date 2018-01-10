@@ -56,7 +56,9 @@ namespace Lumenati
             GL.Uniform1(Shader.uTex, 0);
 
             var fontFilename = Path.Combine(Preferences.Instance.ExtractPath, @"data\ui\font\lumen\static\Folk\Folk.fgb");
-            Font = new Font(fontFilename);
+
+            if (File.Exists(fontFilename))
+                Font = new Font(fontFilename);
 
             foreach (var sprite in lm.Sprites)
             {

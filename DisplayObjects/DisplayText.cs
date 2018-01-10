@@ -61,6 +61,10 @@ namespace Lumenati
 
         public void Render()
         {
+            // FIXME: there's probably a better place to handle this.
+            if (Editor.Font == null)
+                return;
+
             var len = getTextLength(Content);
 
             float x = 0;
