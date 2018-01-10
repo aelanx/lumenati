@@ -131,7 +131,6 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ColorEditor";
-            this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "ColorEditor";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

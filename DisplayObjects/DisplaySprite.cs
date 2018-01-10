@@ -1,4 +1,6 @@
-﻿using OpenTK;
+﻿#define ALMOST_CORRECT
+
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 using System.Drawing;
