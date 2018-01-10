@@ -579,5 +579,10 @@ namespace Lumenati
             var colorEditor = new ColorEditor(Editor.lm.Colors);
             colorEditor.Show();
         }
+
+        private void dumpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Editor.lm.Rebuild(true);
+        }
     }
 }

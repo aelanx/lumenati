@@ -47,9 +47,6 @@ namespace Lumenati
             texlist = new Texlist(Path.Combine(filePath, "texlist.lst"));
 
             //var data = lm.Rebuild(true);
-            //var stupidFilename = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename) + "_out.lm");
-            //using (var fs = new FileStream(stupidFilename, FileMode.Create))
-            //    fs.Write(data, 0, data.Length);
 
             Shader = new LumenShader();
             Shader.EnableAttrib();
