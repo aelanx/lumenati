@@ -71,13 +71,15 @@ namespace Lumenati
 
         void SaveToXML()
         {
-            var doc = new XDocument(
-                new XElement("Preferences",
-                    new XElement("ExtractPath", ExtractPath),
-                    new XElement("StartupFile", StartupFile)
-                )
-            );
 
+            var prefsNode = new XElement("Preferences");
+
+            prefsNode.Add(new XElement("ExtractPath", ExtractPath));
+
+            if (StartupFile != null)
+                prefsNode.Add(new XElement("StartupFile", StartupFile));
+
+            var doc = new XDocument(prefsNode);
             doc.Save(XMLPath);
         }
     }
