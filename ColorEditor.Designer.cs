@@ -47,6 +47,8 @@
             this.labelGreenValue = new System.Windows.Forms.Label();
             this.labelBlueValue = new System.Windows.Forms.Label();
             this.labelAlphaValue = new System.Windows.Forms.Label();
+            this.buttonAdd = new System.Windows.Forms.Button();
+            this.buttonDelete = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarAlpha)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBlue)).BeginInit();
@@ -63,7 +65,7 @@
             this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.listView1.Location = new System.Drawing.Point(12, 12);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(221, 403);
+            this.listView1.Size = new System.Drawing.Size(221, 374);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -239,11 +241,10 @@
             // textBoxHex
             // 
             this.textBoxHex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.textBoxHex, 2);
             this.textBoxHex.Enabled = false;
             this.textBoxHex.Location = new System.Drawing.Point(60, 214);
             this.textBoxHex.Name = "textBoxHex";
-            this.textBoxHex.Size = new System.Drawing.Size(307, 22);
+            this.textBoxHex.Size = new System.Drawing.Size(266, 22);
             this.textBoxHex.TabIndex = 9;
             this.textBoxHex.Text = "#000000";
             this.textBoxHex.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxHex_KeyDown);
@@ -302,11 +303,34 @@
             this.labelAlphaValue.Text = "0";
             this.labelAlphaValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // buttonAdd
+            // 
+            this.buttonAdd.Location = new System.Drawing.Point(12, 392);
+            this.buttonAdd.Name = "buttonAdd";
+            this.buttonAdd.Size = new System.Drawing.Size(75, 23);
+            this.buttonAdd.TabIndex = 4;
+            this.buttonAdd.Text = "Add";
+            this.buttonAdd.UseVisualStyleBackColor = true;
+            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
+            // 
+            // buttonDelete
+            // 
+            this.buttonDelete.Enabled = false;
+            this.buttonDelete.Location = new System.Drawing.Point(158, 392);
+            this.buttonDelete.Name = "buttonDelete";
+            this.buttonDelete.Size = new System.Drawing.Size(75, 23);
+            this.buttonDelete.TabIndex = 5;
+            this.buttonDelete.Text = "Delete";
+            this.buttonDelete.UseVisualStyleBackColor = true;
+            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            // 
             // ColorEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(621, 427);
+            this.Controls.Add(this.buttonDelete);
+            this.Controls.Add(this.buttonAdd);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.listView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -347,5 +371,7 @@
         private System.Windows.Forms.Label labelBlueValue;
         private System.Windows.Forms.Label labelGreenValue;
         private System.Windows.Forms.Label labelRedValue;
+        private System.Windows.Forms.Button buttonAdd;
+        private System.Windows.Forms.Button buttonDelete;
     }
 }

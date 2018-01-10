@@ -159,5 +159,17 @@ namespace Lumenati
             if (match.Groups[4].Success)
                 trackBarAlpha.Value = Convert.ToByte(match.Groups[4].Value, 16);
         }
+
+        private void buttonAdd_Click(object sender, EventArgs e)
+        {
+            var lmColor = Vector4.One;
+            addColor(Colors.Count, lmColor);
+            Colors.Add(lmColor);
+        }
+
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
