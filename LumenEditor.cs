@@ -34,6 +34,7 @@ namespace Lumenati
         // mode shit
         public List<SelectedVertex> SelectedVerts = new List<SelectedVertex>();
         public EditorMode Mode = EditorMode.UV;
+        public DisplaySprite SelectedSprite;
 
         // short term
         public Vector3 dragPosition = Vector3.Zero;

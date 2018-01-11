@@ -69,8 +69,6 @@ namespace Lumenati
 
         bool ShiftHeld = false;
 
-        DisplaySprite SelectedSprite = null;
-
         Lumen.Shape SelectedShape = null;
         List<Lumen.Graphic> SelectedGraphics = new List<Lumen.Graphic>();
         DisplaySprite rootMc;
@@ -78,12 +76,14 @@ namespace Lumenati
         public MainForm()
         {
             InitializeComponent();
+            timeline.Editor = Editor;
             Preferences.Init();
         }
 
         private void Application_Idle(object sender, EventArgs e)
         {
             glControl.Invalidate();
+            timeline.Invalidate();
 
             long renderTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             if ((renderTime - lastRenderTime) <= frameLength)
@@ -117,16 +117,13 @@ namespace Lumenati
             GL.Translate(ViewportPosition);
             GL.Scale(ViewportZoom, ViewportZoom, 0);
 
-            if (SelectedSprite != null)
+            if (Editor.SelectedSprite != null)
             {
                 GL.UseProgram(Editor.Shader.ProgramID);
                 GL.Translate(glControl.ClientRectangle.Width / 2 / ViewportZoom, glControl.ClientRectangle.Height / 2 / ViewportZoom, 0);
-                //if (SelectedSprite.CharacterId == 44 && SelectedSprite.CurrentFrame == 239)
-                //{
-                //    SelectedSprite.CurrentFrame = 0;
-                //}
-                SelectedSprite.Update();
-                SelectedSprite.Render(new RenderState());
+
+                Editor.SelectedSprite.Update();
+                Editor.SelectedSprite.Render(new RenderState());
             }
             else if (rootMc != null)
             {
@@ -230,9 +227,9 @@ namespace Lumenati
         {
 
             if (listView1.SelectedItems.Count == 0)
-                SelectedSprite = null;
+                Editor.SelectedSprite = null;
             else
-                SelectedSprite = Editor.RuntimeSprites[listView1.SelectedIndices[0]];
+                Editor.SelectedSprite = Editor.RuntimeSprites[listView1.SelectedIndices[0]];
 
             //trackBar1.Maximum = SelectedSprite.Frames.Count - 1;
             //PopulateShapeTree();
@@ -547,9 +544,9 @@ namespace Lumenati
 
             if (e.KeyCode == Keys.Space)
             {
-                if (SelectedSprite != null)
+                if (Editor.SelectedSprite != null)
                 {
-                    SelectedSprite.Playing = !SelectedSprite.Playing;
+                    Editor.SelectedSprite.Playing = !Editor.SelectedSprite.Playing;
                 }
             }
 

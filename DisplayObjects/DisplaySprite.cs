@@ -18,7 +18,7 @@ namespace Lumenati
         public int CharacterId;
         SortedDictionary<int, DisplayObject> DisplayList = new SortedDictionary<int, DisplayObject>();
         LumenEditor Editor;
-        Lumen.Sprite Sprite;
+        public Lumen.Sprite Sprite;
 
         public DisplaySprite(LumenEditor editor, Lumen.Sprite sprite)
         {
