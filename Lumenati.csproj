@@ -68,6 +68,12 @@
     <Compile Include="ColorEditor.Designer.cs">
       <DependentUpon>ColorEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ColorPreview.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ColorPreview.Designer.cs">
+      <DependentUpon>ColorPreview.cs</DependentUpon>
+    </Compile>
     <Compile Include="DisplayObject.cs" />
     <Compile Include="DisplayObjects\DisplayShape.cs" />
     <Compile Include="DisplayObjects\DisplayText.cs" />
@@ -96,6 +102,9 @@
     <EmbeddedResource Include="ColorEditor.resx">
       <DependentUpon>ColorEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ColorPreview.resx">
+      <DependentUpon>ColorPreview.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -121,6 +130,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\checkerboard.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

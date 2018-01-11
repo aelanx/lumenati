@@ -13,7 +13,6 @@ namespace Lumenati
 
         List<Vector4> Colors;
         string LastHexValue;
-        bool HexDirty = false;
 
         public ColorEditor(List<Vector4> colors)
         {
@@ -64,7 +63,7 @@ namespace Lumenati
 
             var lmColor = Colors[listView1.SelectedIndices[0]];
             var color = lumenColorToColor(lmColor);
-            pictureBox1.BackColor = color;
+            colorPreview.Color = color;
 
             trackBarRed.Value = color.R;
             trackBarGreen.Value = color.G;
@@ -112,7 +111,7 @@ namespace Lumenati
             var color = lumenColorToColor(lmColor);
             listView1.SelectedItems[0].SubItems[0].Text = lumenColorToString(idx, lmColor);
             listView1.SelectedItems[0].SubItems[1].BackColor = color;
-            pictureBox1.BackColor = color;
+            colorPreview.Color = color;
         }
 
         private void colorTrackBar_Scroll(object sender, EventArgs e)

@@ -31,7 +31,6 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.trackBarAlpha = new System.Windows.Forms.TrackBar();
             this.trackBarBlue = new System.Windows.Forms.TrackBar();
             this.trackBarGreen = new System.Windows.Forms.TrackBar();
@@ -49,7 +48,7 @@
             this.labelAlphaValue = new System.Windows.Forms.Label();
             this.buttonAdd = new System.Windows.Forms.Button();
             this.buttonDelete = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.colorPreview = new ColorPreview();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarAlpha)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBlue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarGreen)).BeginInit();
@@ -75,19 +74,6 @@
             // 
             this.columnHeader1.Width = 169;
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tableLayoutPanel1.SetColumnSpan(this.pictureBox1, 3);
-            this.pictureBox1.Location = new System.Drawing.Point(3, 253);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(364, 149);
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            // 
             // trackBarAlpha
             // 
             this.trackBarAlpha.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -97,7 +83,7 @@
             this.trackBarAlpha.Location = new System.Drawing.Point(60, 153);
             this.trackBarAlpha.Maximum = 255;
             this.trackBarAlpha.Name = "trackBarAlpha";
-            this.trackBarAlpha.Size = new System.Drawing.Size(266, 44);
+            this.trackBarAlpha.Size = new System.Drawing.Size(263, 44);
             this.trackBarAlpha.TabIndex = 3;
             this.trackBarAlpha.Scroll += new System.EventHandler(this.colorTrackBar_Scroll);
             // 
@@ -110,7 +96,7 @@
             this.trackBarBlue.Location = new System.Drawing.Point(60, 103);
             this.trackBarBlue.Maximum = 255;
             this.trackBarBlue.Name = "trackBarBlue";
-            this.trackBarBlue.Size = new System.Drawing.Size(266, 44);
+            this.trackBarBlue.Size = new System.Drawing.Size(263, 44);
             this.trackBarBlue.TabIndex = 2;
             this.trackBarBlue.Scroll += new System.EventHandler(this.colorTrackBar_Scroll);
             // 
@@ -123,7 +109,7 @@
             this.trackBarGreen.Location = new System.Drawing.Point(60, 53);
             this.trackBarGreen.Maximum = 255;
             this.trackBarGreen.Name = "trackBarGreen";
-            this.trackBarGreen.Size = new System.Drawing.Size(266, 44);
+            this.trackBarGreen.Size = new System.Drawing.Size(263, 44);
             this.trackBarGreen.TabIndex = 1;
             this.trackBarGreen.Scroll += new System.EventHandler(this.colorTrackBar_Scroll);
             // 
@@ -136,7 +122,7 @@
             this.trackBarRed.Location = new System.Drawing.Point(60, 3);
             this.trackBarRed.Maximum = 255;
             this.trackBarRed.Name = "trackBarRed";
-            this.trackBarRed.Size = new System.Drawing.Size(266, 44);
+            this.trackBarRed.Size = new System.Drawing.Size(263, 44);
             this.trackBarRed.TabIndex = 0;
             this.trackBarRed.Scroll += new System.EventHandler(this.colorTrackBar_Scroll);
             // 
@@ -158,7 +144,7 @@
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17.55952F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 82.44048F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 43F));
             this.tableLayoutPanel1.Controls.Add(this.labelAlphaValue, 2, 3);
             this.tableLayoutPanel1.Controls.Add(this.labelBlueValue, 2, 2);
             this.tableLayoutPanel1.Controls.Add(this.labelGreenValue, 2, 1);
@@ -166,7 +152,6 @@
             this.tableLayoutPanel1.Controls.Add(this.labelHex, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.label4, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.trackBarRed, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.pictureBox1, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.trackBarAlpha, 1, 3);
             this.tableLayoutPanel1.Controls.Add(this.trackBarGreen, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
@@ -174,6 +159,7 @@
             this.tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.trackBarBlue, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.textBoxHex, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.colorPreview, 0, 5);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(239, 12);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 6;
@@ -244,7 +230,7 @@
             this.textBoxHex.Enabled = false;
             this.textBoxHex.Location = new System.Drawing.Point(60, 214);
             this.textBoxHex.Name = "textBoxHex";
-            this.textBoxHex.Size = new System.Drawing.Size(266, 22);
+            this.textBoxHex.Size = new System.Drawing.Size(263, 22);
             this.textBoxHex.TabIndex = 9;
             this.textBoxHex.Text = "#000000";
             this.textBoxHex.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxHex_KeyDown);
@@ -257,9 +243,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelRedValue.AutoSize = true;
-            this.labelRedValue.Location = new System.Drawing.Point(332, 0);
+            this.labelRedValue.Location = new System.Drawing.Point(329, 0);
             this.labelRedValue.Name = "labelRedValue";
-            this.labelRedValue.Size = new System.Drawing.Size(35, 50);
+            this.labelRedValue.Size = new System.Drawing.Size(38, 50);
             this.labelRedValue.TabIndex = 10;
             this.labelRedValue.Text = "0";
             this.labelRedValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -270,9 +256,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelGreenValue.AutoSize = true;
-            this.labelGreenValue.Location = new System.Drawing.Point(332, 50);
+            this.labelGreenValue.Location = new System.Drawing.Point(329, 50);
             this.labelGreenValue.Name = "labelGreenValue";
-            this.labelGreenValue.Size = new System.Drawing.Size(35, 50);
+            this.labelGreenValue.Size = new System.Drawing.Size(38, 50);
             this.labelGreenValue.TabIndex = 11;
             this.labelGreenValue.Text = "0";
             this.labelGreenValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -283,9 +269,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelBlueValue.AutoSize = true;
-            this.labelBlueValue.Location = new System.Drawing.Point(332, 100);
+            this.labelBlueValue.Location = new System.Drawing.Point(329, 100);
             this.labelBlueValue.Name = "labelBlueValue";
-            this.labelBlueValue.Size = new System.Drawing.Size(35, 50);
+            this.labelBlueValue.Size = new System.Drawing.Size(38, 50);
             this.labelBlueValue.TabIndex = 12;
             this.labelBlueValue.Text = "0";
             this.labelBlueValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -296,9 +282,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelAlphaValue.AutoSize = true;
-            this.labelAlphaValue.Location = new System.Drawing.Point(332, 150);
+            this.labelAlphaValue.Location = new System.Drawing.Point(329, 150);
             this.labelAlphaValue.Name = "labelAlphaValue";
-            this.labelAlphaValue.Size = new System.Drawing.Size(35, 50);
+            this.labelAlphaValue.Size = new System.Drawing.Size(38, 50);
             this.labelAlphaValue.TabIndex = 13;
             this.labelAlphaValue.Text = "0";
             this.labelAlphaValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -324,6 +310,17 @@
             this.buttonDelete.UseVisualStyleBackColor = true;
             this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
             // 
+            // colorPreview
+            // 
+            this.colorPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.colorPreview, 3);
+            this.colorPreview.Location = new System.Drawing.Point(3, 253);
+            this.colorPreview.Name = "colorPreview";
+            this.colorPreview.Size = new System.Drawing.Size(364, 149);
+            this.colorPreview.TabIndex = 14;
+            // 
             // ColorEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -339,7 +336,6 @@
             this.Name = "ColorEditor";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "ColorEditor";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarAlpha)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarBlue)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarGreen)).EndInit();
@@ -354,7 +350,6 @@
 
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.TrackBar trackBarAlpha;
         private System.Windows.Forms.TrackBar trackBarBlue;
@@ -373,5 +368,6 @@
         private System.Windows.Forms.Label labelRedValue;
         private System.Windows.Forms.Button buttonAdd;
         private System.Windows.Forms.Button buttonDelete;
+        private ColorPreview colorPreview;
     }
 }
