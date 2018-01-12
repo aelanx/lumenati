@@ -56,37 +56,43 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AtlasForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AtlasForm.Designer.cs">
-      <DependentUpon>AtlasForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ColorEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ColorEditor.Designer.cs">
-      <DependentUpon>ColorEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ColorPreview.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\ColorPreview.Designer.cs">
       <DependentUpon>ColorPreview.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Timeline.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Timeline.Designer.cs">
+      <DependentUpon>Timeline.cs</DependentUpon>
+    </Compile>
     <Compile Include="DisplayObject.cs" />
     <Compile Include="DisplayObjects\DisplayShape.cs" />
     <Compile Include="DisplayObjects\DisplayText.cs" />
     <Compile Include="Font.cs" />
+    <Compile Include="Forms\AtlasEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AtlasEditor.Designer.cs">
+      <DependentUpon>AtlasEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ColorEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ColorEditor.Designer.cs">
+      <DependentUpon>ColorEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Lumen.cs" />
     <Compile Include="LumenEditor.cs" />
     <Compile Include="LumenShader.cs" />
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="GTX.cs" />
     <Compile Include="IO.cs" />
     <Compile Include="Nut.cs" />
@@ -96,22 +102,19 @@
     <Compile Include="DisplayObjects\DisplaySprite.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="Texlist.cs" />
-    <Compile Include="Timeline.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Timeline.Designer.cs">
-      <DependentUpon>Timeline.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="AtlasForm.resx">
-      <DependentUpon>AtlasForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ColorEditor.resx">
-      <DependentUpon>ColorEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ColorPreview.resx">
       <DependentUpon>ColorPreview.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Controls\Timeline.resx">
+      <DependentUpon>Timeline.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AtlasEditor.resx">
+      <DependentUpon>AtlasEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ColorEditor.resx">
+      <DependentUpon>ColorEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -124,9 +127,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Timeline.resx">
-      <DependentUpon>Timeline.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
