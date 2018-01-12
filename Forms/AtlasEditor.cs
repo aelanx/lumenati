@@ -3,11 +3,11 @@ using System.Windows.Forms;
 
 namespace Lumenati
 {
-    public partial class AtlasForm : Form
+    public partial class AtlasEditor : Form
     {
         LumenEditor Editor;
 
-        public AtlasForm (LumenEditor editor)
+        public AtlasEditor (LumenEditor editor)
         {
             InitializeComponent();
 

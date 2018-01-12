@@ -562,8 +562,8 @@ namespace Lumenati
 
         private void atlasesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var atlasForm = new AtlasForm(Editor);
-            atlasForm.Show();
+            var atlasEditor = new AtlasEditor(Editor);
+            atlasEditor.Show();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

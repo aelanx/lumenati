@@ -1,6 +1,6 @@
 ﻿namespace Lumenati
 {
-    partial class AtlasForm
+    partial class AtlasEditor
     {
         /// <summary>
         /// Required designer variable.
