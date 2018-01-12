@@ -120,16 +120,12 @@ namespace Lumenati
             if (Editor.SelectedSprite != null)
             {
                 GL.UseProgram(Editor.Shader.ProgramID);
-                GL.Translate(glControl.ClientRectangle.Width / 2 / ViewportZoom, glControl.ClientRectangle.Height / 2 / ViewportZoom, 0);
+
+                if (Editor.SelectedSprite != rootMc)
+                    GL.Translate(glControl.ClientRectangle.Width / 2 / ViewportZoom, glControl.ClientRectangle.Height / 2 / ViewportZoom, 0);
 
                 Editor.SelectedSprite.Update();
                 Editor.SelectedSprite.Render(new RenderState());
-            }
-            else if (rootMc != null)
-            {
-                GL.UseProgram(Editor.Shader.ProgramID);
-                rootMc.Update();
-                rootMc.Render(new RenderState());
             }
 
             //if (SelectedShape != null)
@@ -187,7 +183,7 @@ namespace Lumenati
             listView1.Items.Clear();
             foreach (var mc in Editor.lm.Sprites)
             {
-                var mcItem = new ListViewItem($"Sprite c{mc.CharacterId}");
+                var mcItem = new ListViewItem($"Sprite c{mc.CharacterId:X2}");
                 mcItem.Tag = mc;
 
                 listView1.Items.Add(mcItem);
@@ -217,6 +213,7 @@ namespace Lumenati
             //rootMc.GotoLabel("read");
             //rootMc.SearchChild("title_group").Stop();
 
+            Editor.SelectedSprite = rootMc;
 
             frameLength = 1000f / Editor.lm.properties.framerate;
 
@@ -227,7 +224,7 @@ namespace Lumenati
         {
 
             if (listView1.SelectedItems.Count == 0)
-                Editor.SelectedSprite = null;
+                Editor.SelectedSprite = rootMc;
             else
                 Editor.SelectedSprite = Editor.RuntimeSprites[listView1.SelectedIndices[0]];
 
@@ -339,11 +336,11 @@ namespace Lumenati
 
         private void glControl_MouseDown(object sender, MouseEventArgs e)
         {
-            if (SelectedShape == null)
-                return;
-
             if (e.Button == MouseButtons.Right)
                 panning = true;
+
+            if (SelectedShape == null)
+                return;
 
             var mouseX = (e.X - ViewportPosition.X) / ViewportZoom;
             var mouseY = (e.Y - ViewportPosition.Y) / ViewportZoom;
@@ -414,11 +411,11 @@ namespace Lumenati
 
         private void glControl_MouseUp(object sender, MouseEventArgs e)
         {
-            if (SelectedShape == null)
-                return;
-
             if (e.Button == MouseButtons.Right)
                 panning = false;
+
+            if (SelectedShape == null)
+                return;
 
             if (e.Button == MouseButtons.Left)
             {
