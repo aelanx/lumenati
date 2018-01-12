@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -8,6 +9,41 @@ namespace Lumenati
     {
         public LumenEditor Editor;
 
+        const int FrameWidth = 8;
+        const int FrameHeight = 20;
+        const int TickHeight = 3;
+        const int HeaderHeight = 30;
+        const int PlayheadHeight = 15;
+
+        Color _PlayheadColor = Color.Red;
+        Color PlayheadBGColor = Color.FromArgb(128, 255, 0, 0);
+
+        bool Scrubbing = false;
+        int ScrubFrame;
+        bool PreviousPlayState;
+
+        public Color PlayheadColor
+        {
+            get
+            {
+                return _PlayheadColor;
+            }
+
+            set
+            {
+                _PlayheadColor = value;
+                PlayheadBGColor = Color.FromArgb(128, value.R, value.G, value.B);
+            }
+        }
+
+        bool Usable
+        {
+            get
+            {
+                return (Editor != null && Editor.lm != null && Editor.SelectedSprite != null);
+            }
+        }
+
         public Timeline()
         {
             InitializeComponent();
@@ -16,29 +52,52 @@ namespace Lumenati
 
         protected override void OnClick(EventArgs e)
         {
-            MessageBox.Show("hi");
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            // Let's just deal with scrubbing for the time being...
+            if (Usable)
+            {
+                if (e.Y < HeaderHeight)
+                {
+                    Scrubbing = true;
+                    PreviousPlayState = Editor.SelectedSprite.Playing;
+                    Editor.SelectedSprite.Playing = false;
+                    OnMouseMove(e);
+                }
+            }
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            if (Usable)
+            {
+                if (Scrubbing)
+                {
+                    Scrubbing = false;
+                    Editor.SelectedSprite.Playing = PreviousPlayState;
+                }
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            if (Usable)
+            {
+                if (Scrubbing)
+                {
+                    var mc = Editor.SelectedSprite.Sprite;
+
+                    ScrubFrame = (e.X / FrameWidth);
+                    ScrubFrame = Math.Min(Math.Max(ScrubFrame, 0), mc.Frames.Count-1);
+                    Editor.SelectedSprite.GotoFrame(ScrubFrame);
+                }
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            const int FrameWidth = 10;
-            const int FrameHeight = 20;
-            const int TickHeight = 3;
-            const int HeaderHeight = 30;
-            const int PlayheadHeight = 15;
-
             var pen = new Pen(ForeColor);
             var g = e.Graphics;
 
@@ -61,7 +120,7 @@ namespace Lumenati
                 g.DrawLine(pen, x, y, x, y+TickHeight);
             }
 
-            if (Editor != null && Editor.lm != null && Editor.SelectedSprite != null)
+            if (Usable)
             {
                 var lm = Editor.lm;
                 var frameBrush = new SolidBrush(Color.Gray);
@@ -106,13 +165,22 @@ namespace Lumenati
 
                     x += labelWidth;
                 }
-
-                var playheadPen = new Pen(Color.Red);
-                var playheadBrush = new SolidBrush(Color.FromArgb(128, 255, 0, 0));
-                var playheadX = Editor.SelectedSprite.CurrentFrame * FrameWidth + FrameWidth / 2;
-                g.DrawLine(playheadPen, playheadX, PlayheadHeight, playheadX, 60);
-                g.FillRectangle(playheadBrush, playheadX - FrameWidth / 2, 0, FrameWidth, PlayheadHeight);
-                g.DrawRectangle(playheadPen, playheadX - FrameWidth / 2, 0, FrameWidth, PlayheadHeight);
+                
+                if (Scrubbing)
+                {
+                    var scrubPen = new Pen(Color.Black, 2);
+                    var scrubX = ScrubFrame * FrameWidth + FrameWidth / 2;
+                    g.DrawLine(scrubPen, scrubX, PlayheadHeight, scrubX, 60);
+                }
+                else
+                {
+                    var playheadPen = new Pen(PlayheadColor);
+                    var playheadBrush = new SolidBrush(PlayheadBGColor);
+                    var playheadX = Editor.SelectedSprite.CurrentFrame * FrameWidth + FrameWidth / 2;
+                    g.DrawLine(playheadPen, playheadX, PlayheadHeight, playheadX, 60);
+                    g.FillRectangle(playheadBrush, playheadX - FrameWidth / 2, 0, FrameWidth, PlayheadHeight);
+                    g.DrawRectangle(playheadPen, playheadX - FrameWidth / 2, 0, FrameWidth, PlayheadHeight);
+                }
             }
         }
     }

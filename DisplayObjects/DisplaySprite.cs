@@ -28,6 +28,72 @@ namespace Lumenati
             CharacterId = Sprite.CharacterId;
         }
 
+        public Lumen.Sprite.Label getPrecedingLabel(int frameId)
+        {
+            Lumen.Sprite.Label precedingLabel = null;
+
+            foreach (var label in Sprite.labels)
+            {
+                if (label.StartFrame == frameId)
+                    return label;
+
+                if (label.StartFrame < frameId)
+                    precedingLabel = label;
+                else
+                    break;
+            }
+
+            return precedingLabel;
+        }
+
+        public void GotoFrame(int frameId)
+        {
+            if (frameId == CurrentFrame)
+                return;
+
+            // To get an accurate state, we need to move *forward* to the target frame,
+            // simulating each along the way. Otherwise, we might miss a placement,
+            // deletion, or action, leaving the display list completely borked.
+
+            // Keyframes contain the full state of their equivalent frame, so we
+            // jump back to the nearest keyframe and move forward if frameId < CurrentFrame.
+
+            DisplayList.Clear();
+            if (Sprite.labels.Count > 0)
+            {
+                var precedingLabel = Sprite.labels[0];
+                int precedingLabelId = 0;
+
+                for (int i = 0; i < Sprite.labels.Count; i++)
+                {
+                    var label = Sprite.labels[i];
+
+                    if (label.StartFrame < frameId)
+                    {
+                        precedingLabel = label;
+                        precedingLabelId = i;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                handleFrame(Sprite.Keyframes[precedingLabelId]);
+                CurrentFrame = precedingLabel.StartFrame;
+            }
+            else
+            {
+                CurrentFrame = 0;
+            }
+
+            for (int i = CurrentFrame; i < frameId; i++)
+            {
+                handleFrame(Sprite.Frames[i]);
+            }
+            CurrentFrame = frameId;
+        }
+
         public void GotoLabel(string txt)
         {
             for (int keyframeId = 0; keyframeId < Sprite.labels.Count; keyframeId++)
