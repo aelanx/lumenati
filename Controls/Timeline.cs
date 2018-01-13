@@ -128,7 +128,6 @@ namespace Lumenati
 
                 var mc = Editor.SelectedSprite.Sprite;
 
-                var x = 0;
                 for (int i = 0; i < mc.labels.Count; i++)
                 {
                     var label = mc.labels[i];
@@ -141,12 +140,11 @@ namespace Lumenati
 
                     var labelWidth = numLabelFrames * FrameWidth;
 
+                    var x = label.StartFrame * FrameWidth;
                     g.FillRectangle(frameBrush, x, HeaderHeight, labelWidth, FrameHeight);
-                    x += labelWidth;
                 }
 
                 // FIXME: lol
-                x = 0;
                 for (int i = 0; i < mc.labels.Count; i++)
                 {
                     var label = mc.labels[i];
@@ -159,11 +157,10 @@ namespace Lumenati
 
                     var labelWidth = numLabelFrames * FrameWidth;
 
+                    var x = label.StartFrame * FrameWidth;
                     g.DrawString(lm.Strings[label.NameId], Font, textBrush, x, HeaderHeight);
                     g.DrawLine(frameBorderPen, x + labelWidth, HeaderHeight, x + labelWidth, HeaderHeight + FrameHeight);
                     g.DrawLine(frameBorderPen, x, HeaderHeight + FrameHeight, x + labelWidth, HeaderHeight + FrameHeight);
-
-                    x += labelWidth;
                 }
                 
                 if (Scrubbing)

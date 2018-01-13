@@ -61,8 +61,8 @@ namespace Lumenati
             DisplayList.Clear();
             if (Sprite.labels.Count > 0)
             {
-                var precedingLabel = Sprite.labels[0];
-                int precedingLabelId = 0;
+                Lumen.Sprite.Label precedingLabel = null;
+                int precedingLabelId = -1;
 
                 for (int i = 0; i < Sprite.labels.Count; i++)
                 {
@@ -79,12 +79,21 @@ namespace Lumenati
                     }
                 }
 
-                handleFrame(Sprite.Keyframes[precedingLabelId]);
-                CurrentFrame = precedingLabel.StartFrame;
+                if (precedingLabel != null)
+                {
+                    handleFrame(Sprite.Keyframes[precedingLabelId]);
+                    CurrentFrame = precedingLabel.StartFrame;
+                }
+                else
+                {
+                    CurrentFrame = 0;
+                    handleFrame(Sprite.Frames[0]);
+                }
             }
             else
             {
                 CurrentFrame = 0;
+                handleFrame(Sprite.Frames[0]);
             }
 
             for (int i = CurrentFrame; i < frameId; i++)
@@ -243,8 +252,12 @@ namespace Lumenati
             {
                 handleFrame(Sprite.Frames[CurrentFrame]);
 
-                CurrentFrame++;
-                CurrentFrame %= Sprite.Frames.Count;
+                // If we don't check again, stop actions are 1 frame late.
+                if (Playing)
+                {
+                    CurrentFrame++;
+                    CurrentFrame %= Sprite.Frames.Count;
+                }
             }
 #else
             if (!Playing)

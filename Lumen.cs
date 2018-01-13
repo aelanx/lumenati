@@ -246,24 +246,20 @@ namespace Lumenati
 
         public class Rect
         {
-            public float Left;
-            public float Top;
-            public float Right;
-            public float Bottom;
+            public Vector2 TopLeft;
+            public Vector2 BottomRight;
 
             public Rect() { }
 
             public Rect(float l, float t, float r, float b)
             {
-                Left = l;
-                Top = t;
-                Right = r;
-                Bottom = b;
+                TopLeft = new Vector2(l, t);
+                BottomRight = new Vector2(r, b);
             }
 
             public override string ToString()
             {
-                return $"[{Left}, {Top}, {Right}, {Bottom}]";
+                return $"[{TopLeft.X}, {TopLeft.Y}, {BottomRight.X}, {BottomRight.Y}]";
             }
         }
 
@@ -1240,10 +1236,10 @@ namespace Lumenati
                 var bb = Bounds[i];
                 Console.WriteLine($"\t0x{i:X2}: {bb} // offset=0x{o.Size:X2}");
 
-                o.writeFloat(bb.Left);
-                o.writeFloat(bb.Top);
-                o.writeFloat(bb.Right);
-                o.writeFloat(bb.Bottom);
+                o.writeFloat(bb.TopLeft.X);
+                o.writeFloat(bb.TopLeft.Y);
+                o.writeFloat(bb.BottomRight.X);
+                o.writeFloat(bb.BottomRight.Y);
             }
 
             Console.WriteLine("]\n");

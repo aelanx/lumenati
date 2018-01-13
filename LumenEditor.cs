@@ -221,16 +221,16 @@ namespace Lumenati
         public void DrawBounds(Lumen.Rect rect)
         {
             GL.Begin(PrimitiveType.Quads);
-            GL.Vertex2(rect.Left, rect.Top);
-            GL.Vertex2(rect.Right, rect.Top);
-            GL.Vertex2(rect.Right, rect.Bottom);
-            GL.Vertex2(rect.Left, rect.Bottom);
+            GL.Vertex2(rect.TopLeft);
+            GL.Vertex2(rect.BottomRight.X, rect.TopLeft.Y);
+            GL.Vertex2(rect.BottomRight);
+            GL.Vertex2(rect.TopLeft.X, rect.BottomRight.Y);
             GL.End();
 
-            DrawSquare(8, rect.Left, rect.Top);
-            DrawSquare(8, rect.Right, rect.Top);
-            DrawSquare(8, rect.Right, rect.Bottom);
-            DrawSquare(8, rect.Left, rect.Bottom);
+            //DrawSquare(8, rect.Left, rect.Top);
+            //DrawSquare(8, rect.Right, rect.Top);
+            //DrawSquare(8, rect.Right, rect.Bottom);
+            //DrawSquare(8, rect.Left, rect.Bottom);
         }
 
         public void DrawGraphic(Lumen.Graphic gfx, PrimitiveType primitiveType)
