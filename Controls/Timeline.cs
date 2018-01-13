@@ -32,9 +32,9 @@ namespace Lumenati
 
         bool Scrubbing = false;
         bool Selecting = false;
+
         int ScrubFrame;
         bool PreviousPlayState;
-
         int SelectionStartFrame;
         int SelectionEndFrame;
 
@@ -187,6 +187,17 @@ namespace Lumenati
 
                 var mc = Editor.SelectedSprite.Sprite;
 
+                // because keyframes aren't required, I guess.
+                if (mc.labels.Count == 0)
+                {
+                    var x = 0;
+                    var labelWidth = mc.Frames.Count * FrameWidth;
+                    g.FillRectangle(frameBrush, x, HeaderHeight, labelWidth, FrameHeight);
+                    g.DrawLine(frameBorderPen, x + labelWidth, HeaderHeight, x + labelWidth, HeaderHeight + FrameHeight);
+                    g.DrawLine(frameBorderPen, x, HeaderHeight + FrameHeight, x + labelWidth, HeaderHeight + FrameHeight);
+
+                }
+
                 for (int i = 0; i < mc.labels.Count; i++)
                 {
                     var label = mc.labels[i];
@@ -201,6 +212,10 @@ namespace Lumenati
 
                     var x = label.StartFrame * FrameWidth;
                     g.FillRectangle(frameBrush, x, HeaderHeight, labelWidth, FrameHeight);
+
+                    // Leading frames
+                    if (i == 0 && label.StartFrame > 0)
+                        g.FillRectangle(frameBrush, 0, HeaderHeight, label.StartFrame * FrameWidth, FrameHeight);
                 }
 
                 // FIXME: lol
@@ -220,8 +235,15 @@ namespace Lumenati
                     g.DrawString(lm.Strings[label.NameId], Font, textBrush, x, HeaderHeight);
                     g.DrawLine(frameBorderPen, x + labelWidth, HeaderHeight, x + labelWidth, HeaderHeight + FrameHeight);
                     g.DrawLine(frameBorderPen, x, HeaderHeight + FrameHeight, x + labelWidth, HeaderHeight + FrameHeight);
+
+                    if (i == 0 && label.StartFrame > 0)
+                    {
+                        var w = label.StartFrame * FrameWidth;
+                        g.DrawLine(frameBorderPen, 0 + w, HeaderHeight, 0 + w, HeaderHeight + FrameHeight);
+                        g.DrawLine(frameBorderPen, 0, HeaderHeight + FrameHeight, 0 + w, HeaderHeight + FrameHeight);
+                    }
                 }
-                
+
                 if (Scrubbing)
                 {
                     var scrubPen = new Pen(Color.Black, 2);
@@ -246,8 +268,6 @@ namespace Lumenati
 
                     var x = lower * FrameWidth;
                     var w = (upper - lower) * FrameWidth;
-                    if (w == 0)
-                        w = FrameWidth;
 
                     g.FillRectangle(SelectionBrush, x, HeaderHeight, w, FrameHeight);
                 }
