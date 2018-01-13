@@ -1,16 +1,11 @@
-﻿#define ALMOST_CORRECT
-
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 
 namespace Lumenati
 {
     public class DisplaySprite
     {
-        public bool Playing = true;
+        public bool Playing = false;
         public int CurrentFrame = 0;
         public bool Visible = true;
 
@@ -162,12 +157,26 @@ namespace Lumenati
             return currentSprite;
         }
 
+        public void Reset()
+        {
+            foreach (var child in DisplayList.Values)
+            {
+                if (child.sprite != null)
+                {
+                    child.sprite.Reset();
+                }
+            }
+
+            DisplayList.Clear();
+            Playing = false;
+            CurrentFrame = 0;
+
+            Init();
+        }
+
         public void Init()
         {
-            if (Sprite.Keyframes.Count == 0)
-                handleFrame(Sprite.Frames[0]);
-            else
-                handleFrame(Sprite.Keyframes[0]);
+            handleFrame(Sprite.Frames[0]);
 
             foreach (var child in DisplayList.Values)
             {
@@ -247,29 +256,17 @@ namespace Lumenati
 
         public void Update()
         {
-#if ALMOST_CORRECT
             if (Playing)
             {
-                handleFrame(Sprite.Frames[CurrentFrame]);
-
-                // If we don't check again, stop actions are 1 frame late.
-                if (Playing)
+                CurrentFrame++;
+                if (CurrentFrame >= Sprite.Frames.Count)
                 {
-                    CurrentFrame++;
-                    CurrentFrame %= Sprite.Frames.Count;
+                    CurrentFrame = Sprite.Frames.Count - 1;
+                    Stop();
                 }
+
+                handleFrame(Sprite.Frames[CurrentFrame]);
             }
-#else
-            if (!Playing)
-                return;
-
-            handleFrame(Sprite.Frames[CurrentFrame]);
-            CurrentFrame++;
-            CurrentFrame %= Sprite.Frames.Count;
-#endif
-
-            //if (CurrentFrame >= Sprite.Frames.Count)
-            //    Stop();
 
             foreach (var obj in DisplayList.Values)
             {

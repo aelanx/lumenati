@@ -82,6 +82,12 @@ namespace Lumenati
             atlases.Clear();
         }
 
+        public void SelectSprite(DisplaySprite sprite)
+        {
+            SelectedSprite = sprite;
+            SelectedSprite.Reset();
+        }
+
         public void SetBlendMode(Lumen.BlendMode mode)
         {
             switch (mode)

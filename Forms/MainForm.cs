@@ -76,8 +76,10 @@ namespace Lumenati
         public MainForm()
         {
             InitializeComponent();
-            timeline.Editor = Editor;
             Preferences.Init();
+            timeline.Editor = Editor;
+
+            glControl.Focus();
         }
 
         private void Application_Idle(object sender, EventArgs e)
@@ -213,7 +215,7 @@ namespace Lumenati
             //rootMc.GotoLabel("read");
             //rootMc.SearchChild("title_group").Stop();
 
-            Editor.SelectedSprite = rootMc;
+            Editor.SelectSprite(rootMc);
 
             frameLength = 1000f / Editor.lm.properties.framerate;
 
@@ -224,9 +226,9 @@ namespace Lumenati
         {
 
             if (listView1.SelectedItems.Count == 0)
-                Editor.SelectedSprite = rootMc;
+                Editor.SelectSprite(rootMc);
             else
-                Editor.SelectedSprite = Editor.RuntimeSprites[listView1.SelectedIndices[0]];
+                Editor.SelectSprite(Editor.RuntimeSprites[listView1.SelectedIndices[0]]);
 
             //trackBar1.Maximum = SelectedSprite.Frames.Count - 1;
             //PopulateShapeTree();
@@ -547,6 +549,9 @@ namespace Lumenati
             {
                 if (Editor.SelectedSprite != null)
                 {
+                    if (!Editor.SelectedSprite.Playing && Editor.SelectedSprite.CurrentFrame >= Editor.SelectedSprite.Sprite.Frames.Count-1)
+                        Editor.SelectedSprite.Reset();
+
                     Editor.SelectedSprite.Playing = !Editor.SelectedSprite.Playing;
                 }
             }
