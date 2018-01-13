@@ -7,6 +7,13 @@ using System.Windows.Forms;
 
 namespace Lumenati
 {
+    enum SelectionState
+    {
+        None,
+        Set,
+        Add
+    }
+
     public partial class Timeline : UserControl
     {
         public LumenEditor Editor;
@@ -21,37 +28,17 @@ namespace Lumenati
         Color PlayheadBGColor = Color.FromArgb(128, 255, 0, 0);
         Brush SelectionBrush = new SolidBrush(Color.FromArgb(128, 0, 128, 0));
 
+        bool ControlHeld;
+
         bool Scrubbing = false;
+        bool Selecting = false;
         int ScrubFrame;
         bool PreviousPlayState;
 
-        bool Selecting = false;
-        int SelectionStartFrame = -1;
+        int SelectionStartFrame;
         int SelectionEndFrame;
 
-        // FIXME: this is just temporary. We need to be able to ctrl+click
-        // to add arbitrary frames to the selection, but I don't want to
-        // rewrite the whole selection shit right now lol.
-        public List<int> SelectedFrameIds
-        {
-            get
-            {
-                var selection = new List<int>();
-
-                if (SelectionStartFrame != -1)
-                {
-                    var lower = Math.Min(SelectionStartFrame, SelectionEndFrame);
-                    var upper = Math.Max(SelectionStartFrame, SelectionEndFrame) + 1;
-
-                    for (var i = lower; i < upper; i++)
-                    {
-                        selection.Add(i);
-                    }
-                }
-
-                return selection;
-            }
-        }
+        public List<int> SelectedFrameIds = new List<int>();
 
         public Color PlayheadColor
         {
@@ -78,11 +65,18 @@ namespace Lumenati
         public Timeline()
         {
             InitializeComponent();
-            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.Selectable, true);
         }
 
-        protected override void OnClick(EventArgs e)
+        // FIXME: honestly, fucking kill me
+        public void zOnKeyDown(KeyEventArgs e)
         {
+            ControlHeld = e.Control;
+        }
+
+        public void zOnKeyUp(KeyEventArgs e)
+        {
+            ControlHeld = e.Control;
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -94,18 +88,20 @@ namespace Lumenati
             {
                 if (e.Y > HeaderHeight)
                 {
+                    Selecting = true;
+
+                    if (!ControlHeld)
+                        SelectedFrameIds.Clear();
+
                     SelectionStartFrame = (e.X / FrameWidth);
                     SelectionEndFrame = (e.X / FrameWidth);
-                    Selecting = true;
-                }
-                else
-                {
-                    SelectionStartFrame = -1;
                 }
 
                 Scrubbing = true;
                 PreviousPlayState = Editor.SelectedSprite.Playing;
                 Editor.SelectedSprite.Playing = false;
+
+                // Trigger move event to immediately select first frame.
                 OnMouseMove(e);
             }
         }
@@ -126,6 +122,14 @@ namespace Lumenati
                 if (Selecting)
                 {
                     Selecting = false;
+                    var lower = Math.Min(SelectionStartFrame, SelectionEndFrame);
+                    var upper = Math.Max(SelectionStartFrame, SelectionEndFrame) + 1;
+
+                    for (var i = lower; i < upper; i++)
+                    {
+                        if (!SelectedFrameIds.Contains(i))
+                            SelectedFrameIds.Add(i);
+                    }
                 }
             }
         }
@@ -234,14 +238,23 @@ namespace Lumenati
                     g.DrawRectangle(playheadPen, playheadX - FrameWidth / 2, 0, FrameWidth, PlayheadHeight);
                 }
 
-                if (SelectionStartFrame != -1)
+                // TODO: don't draw frame selections for already selected frames.
+                if (Selecting)
                 {
-                    var x = SelectionStartFrame * FrameWidth;
-                    var w = (SelectionEndFrame - SelectionStartFrame) * FrameWidth;
+                    var lower = Math.Min(SelectionStartFrame, SelectionEndFrame);
+                    var upper = Math.Max(SelectionStartFrame, SelectionEndFrame) + 1;
+
+                    var x = lower * FrameWidth;
+                    var w = (upper - lower) * FrameWidth;
                     if (w == 0)
                         w = FrameWidth;
 
                     g.FillRectangle(SelectionBrush, x, HeaderHeight, w, FrameHeight);
+                }
+
+                foreach (var frameId in SelectedFrameIds)
+                {
+                    g.FillRectangle(SelectionBrush, frameId * FrameWidth, HeaderHeight, FrameWidth, FrameHeight);
                 }
             }
         }

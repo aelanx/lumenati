@@ -513,6 +513,8 @@ namespace Lumenati
 
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
+            timeline.zOnKeyDown(e);
+
             if (e.Control && e.KeyCode == Keys.O)
                 openToolStripMenuItem_Click(null, null);
 
@@ -528,6 +530,8 @@ namespace Lumenati
 
         private void MainForm_KeyUp(object sender, KeyEventArgs e)
         {
+            timeline.zOnKeyUp(e);
+
             if (!e.Shift)
                 ShiftHeld = false;
 
