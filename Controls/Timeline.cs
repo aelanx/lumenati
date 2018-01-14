@@ -87,6 +87,10 @@ namespace Lumenati
                     SelectionStartFrame = (e.X / FrameWidth);
                     SelectionEndFrame = (e.X / FrameWidth);
                 }
+                else
+                {
+                    SelectedFrameIds.Clear();
+                }
 
                 Scrubbing = true;
                 PreviousPlayState = Editor.SelectedSprite.Playing;
