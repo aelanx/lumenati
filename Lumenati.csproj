@@ -72,6 +72,7 @@
     <Compile Include="DisplayObjects\DisplayShape.cs" />
     <Compile Include="DisplayObjects\DisplayText.cs" />
     <Compile Include="Font.cs" />
+    <Compile Include="ActionScript.cs" />
     <Compile Include="Forms\AtlasEditor.cs">
       <SubType>Form</SubType>
     </Compile>

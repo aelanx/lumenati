@@ -526,6 +526,24 @@ namespace Lumenati
             if (e.Control && e.Shift && e.KeyCode == Keys.S)
                 saveasToolStripMenuItem_Click(null, null);
 
+            if (e.KeyCode == Keys.OemPeriod)
+            {
+                if (Editor.SelectedSprite != null)
+                {
+                    if (Editor.SelectedSprite.CurrentFrame < Editor.SelectedSprite.Sprite.Frames.Count - 1)
+                    Editor.SelectedSprite.GotoFrame(Editor.SelectedSprite.CurrentFrame+1);
+                }
+            }
+
+            if (e.KeyCode == Keys.Oemcomma)
+            {
+                if (Editor.SelectedSprite != null)
+                {
+                    if (Editor.SelectedSprite.CurrentFrame > 0)
+                        Editor.SelectedSprite.GotoFrame(Editor.SelectedSprite.CurrentFrame-1);
+                }
+            }
+
             if (e.Shift)
                 ShiftHeld = true;
         }
