@@ -1047,8 +1047,8 @@ namespace Lumenati
                             float y = f.readFloat();
 
                             var mat = new Matrix4(
-                                a, c, 0, 0,
-                                b, d, 0, 0,
+                                a, b, 0, 0,
+                                c, d, 0, 0,
                                 0, 0, 1, 0,
                                 x, y, 0, 1
                             );

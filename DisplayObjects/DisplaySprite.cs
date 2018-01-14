@@ -277,10 +277,10 @@ namespace Lumenati
             {
                 GL.PushMatrix();
 
-                if (obj.hasPos)
-                    GL.Translate(obj.pos.X, obj.pos.Y, 0);
-                else if (obj.hasMatrix)
+                if (obj.hasMatrix)
                     GL.MultMatrix(ref obj.matrix);
+                else if (obj.hasPos)
+                    GL.Translate(obj.pos.X, obj.pos.Y, 0);
 
                 var newState = new RenderState();
                 newState.colorAdd = state.colorAdd;
