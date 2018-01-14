@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics;
 using System.IO;
+using System.Text;
 
 namespace Lumenati
 {
@@ -1143,8 +1144,10 @@ namespace Lumenati
                 var str = Strings[i];
 
                 Console.WriteLine($"\t0x{i:X3}: \"{str}\"");
-                tag.writeInt(str.Length);
-                tag.writeStringUtf8(str);
+
+                var strBytes = Encoding.UTF8.GetBytes(str);
+                tag.writeInt(strBytes.Length);
+                tag.write(strBytes);
 
                 int padSize = 4 - (tag.Size % 4);
                 for (int j = 0; j < padSize; j++)
@@ -1398,7 +1401,6 @@ namespace Lumenati
             writeTexts(o);
 
             o.writeInt((int)TagType.End);
-            o.writeInt(0);
             o.writeInt(0);
 
             int padSize = (4 - (o.Size % 4)) % 4;
