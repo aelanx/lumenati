@@ -25,9 +25,7 @@ namespace Lumenati
         public Lumen lm;
         public Texlist texlist;
         Dictionary<int, Nut> atlases = new Dictionary<int, Nut>();
-        public List<DisplaySprite> RuntimeSprites = new List<DisplaySprite>();
-        public List<DisplayShape> RuntimeShapes = new List<DisplayShape>();
-        public List<DisplayText> RuntimeTexts = new List<DisplayText>();
+        public SortedDictionary<int, DisplayObject> CharacterDict = new SortedDictionary<int, DisplayObject>();
         public LumenShader Shader;
         public Font Font;
 
@@ -62,22 +60,13 @@ namespace Lumenati
                 Font = new Font(fontFilename);
 
             foreach (var sprite in lm.Sprites)
-            {
-                var rs = new DisplaySprite(this, sprite);
-                RuntimeSprites.Add(rs);
-            }
+                CharacterDict[sprite.CharacterId] = new DisplaySprite(this, sprite);
 
             foreach (var shape in lm.Shapes)
-            {
-                var rs = new DisplayShape(this, shape);
-                RuntimeShapes.Add(rs);
-            }
+                CharacterDict[shape.CharacterId] = new DisplayShape(this, shape);
 
             foreach (var text in lm.Texts)
-            {
-                var rs = new DisplayText(this, text);
-                RuntimeTexts.Add(rs);
-            }
+                CharacterDict[text.CharacterId] = new DisplayText(this, text);
 
             atlases.Clear();
         }
@@ -117,50 +106,6 @@ namespace Lumenati
             {
                 if (shape.CharacterId == characterId)
                     return shape;
-            }
-
-            return null;
-        }
-
-        public Lumen.Sprite GetSpriteByCharacterId(int characterId)
-        {
-            foreach (var sprite in lm.Sprites)
-            {
-                if (sprite.CharacterId == characterId)
-                    return sprite;
-            }
-
-            return null;
-        }
-
-        public DisplaySprite GetRuntimeSpriteByCharacterId(int characterId)
-        {
-            foreach (var sprite in RuntimeSprites)
-            {
-                if (sprite.CharacterId == characterId)
-                    return sprite;
-            }
-
-            return null;
-        }
-
-        public DisplayShape GetRuntimeShapeByCharacterId(int characterId)
-        {
-            foreach (var shape in RuntimeShapes)
-            {
-                if (shape.CharacterId == characterId)
-                    return shape;
-            }
-
-            return null;
-        }
-
-        public DisplayText GetRuntimeTextByCharacterId(int characterId)
-        {
-            foreach (var text in RuntimeTexts)
-            {
-                if (text.CharacterId == characterId)
-                    return text;
             }
 
             return null;

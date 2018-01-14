@@ -4,22 +4,20 @@ using System.Collections.Generic;
 
 namespace Lumenati
 {
-    public class DisplayText
+    public class DisplayText : DisplayObject
     {
-        public int CharacterId;
-
         Lumen.DynamicText Text;
-        LumenEditor Editor;
-
         public string Content;
 
-        public DisplayText(LumenEditor editor, Lumen.DynamicText text)
+        public DisplayText(LumenEditor editor, Lumen.DynamicText text) : base(editor, text.CharacterId)
         {
-            Editor = editor;
             Text = text;
             Content = Editor.lm.Strings[text.placeholderTextId];
+        }
 
-            CharacterId = Text.characterId;
+        public override DisplayObject Clone()
+        {
+            return new DisplayText(Editor, Text);
         }
 
         float getLineLength(string line)
@@ -59,7 +57,7 @@ namespace Lumenati
             return length;
         }
 
-        public void Render()
+        public override void Render(RenderState state)
         {
             // FIXME: there's probably a better place to handle this.
             if (Editor.Font == null)

@@ -186,12 +186,13 @@ namespace Lumenati
             foreach (var mc in Editor.lm.Sprites)
             {
                 var mcItem = new ListViewItem($"Sprite c{mc.CharacterId:X2}");
-                mcItem.Tag = mc;
+                mcItem.Tag = (DisplaySprite)Editor.CharacterDict[mc.CharacterId];
 
                 listView1.Items.Add(mcItem);
             }
 
-            rootMc = Editor.RuntimeSprites[Editor.RuntimeSprites.Count - 1];
+            // FIXME: oh wow lmao
+            rootMc = (DisplaySprite)((DisplaySprite)Editor.CharacterDict[(int)Editor.lm.properties.maxCharacterId]).Clone();
             rootMc.Init();
 
             if (filename.EndsWith("stage.lm"))
@@ -205,7 +206,8 @@ namespace Lumenati
 
             if (filename.EndsWith("main.lm"))
             {
-                rootMc.SearchChild("hit_01").Visible = false;
+                var hitMc = rootMc.SearchChild("hit_01");
+                hitMc.Visible = false;
             }
 
             //rootMc.GetPathMC("title_group").Visible = false;
@@ -224,13 +226,11 @@ namespace Lumenati
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             if (listView1.SelectedItems.Count == 0)
                 Editor.SelectSprite(rootMc);
             else
-                Editor.SelectSprite(Editor.RuntimeSprites[listView1.SelectedIndices[0]]);
+                Editor.SelectSprite((DisplaySprite)listView1.SelectedItems[0].Tag);
 
-            //trackBar1.Maximum = SelectedSprite.Frames.Count - 1;
             //PopulateShapeTree();
         }
 

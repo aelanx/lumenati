@@ -1,23 +1,19 @@
 ﻿using OpenTK;
-using OpenTK.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lumenati
 {
     public class DisplayObject
     {
-        public DisplayShape shape;
-        public DisplaySprite sprite;
-        public DisplayText text;
+        //public DisplayShape shape;
+        //public DisplaySprite sprite;
+        //public DisplayText text;
 
         // unlike swf, I don't think lm uses depth as the displaylist key.
         // Not positive, so fuck it.
         //public int depth;
 
+        protected LumenEditor Editor;
+        public int CharacterId;
         public string name;
 
         public bool hasMatrix;
@@ -30,6 +26,19 @@ namespace Lumenati
         public Vector4 colorMult;
 
         public Lumen.BlendMode BlendMode;
+
+        public DisplayObject(LumenEditor editor, int characterId)
+        {
+            Editor = editor;
+            CharacterId = characterId;
+        }
+
+        public virtual void Render(RenderState state) { }
+        public virtual DisplayObject Clone()
+        {
+            return new DisplayObject(Editor, CharacterId);
+        }
+
     }
 
     // this... uhhh. doesn't belong here...

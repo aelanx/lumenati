@@ -2,24 +2,23 @@
 
 namespace Lumenati
 {
-    public class DisplayShape
+    public class DisplayShape : DisplayObject
     {
-        public int CharacterId;
-
         Lumen.Shape Shape;
         Lumen.Rect Bounds;
-        LumenEditor Editor;
 
-        public DisplayShape(LumenEditor editor, Lumen.Shape shape)
+        public DisplayShape(LumenEditor editor, Lumen.Shape shape) : base(editor, shape.CharacterId)
         {
-            Editor = editor;
             Shape = shape;
             Bounds = Editor.lm.Bounds[Shape.BoundsId];
-
-            CharacterId = Shape.CharacterId;
         }
 
-        public void Render()
+        public override DisplayObject Clone()
+        {
+            return new DisplayShape(Editor, Shape);
+        }
+
+        public override void Render(RenderState state)
         {
             Editor.StencilRect(Bounds);
 

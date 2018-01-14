@@ -3,24 +3,24 @@ using System.Collections.Generic;
 
 namespace Lumenati
 {
-    public class DisplaySprite
+    public class DisplaySprite : DisplayObject
     {
         public bool Playing = false;
         public int CurrentFrame = 0;
         public bool Visible = true;
 
         //
-        public int CharacterId;
         SortedDictionary<int, DisplayObject> DisplayList = new SortedDictionary<int, DisplayObject>();
-        LumenEditor Editor;
         public Lumen.Sprite Sprite;
 
-        public DisplaySprite(LumenEditor editor, Lumen.Sprite sprite)
+        public DisplaySprite(LumenEditor editor, Lumen.Sprite sprite) : base(editor, sprite.CharacterId)
         {
-            Editor = editor;
             Sprite = sprite;
+        }
 
-            CharacterId = Sprite.CharacterId;
+        public override DisplayObject Clone()
+        {
+            return new DisplaySprite(Editor, Sprite);
         }
 
         public Lumen.Sprite.Label getPrecedingLabel(int frameId)
@@ -116,15 +116,17 @@ namespace Lumenati
         {
             foreach (var obj in DisplayList.Values)
             {
-                if (obj.name == name)
-                    return obj.sprite;
+                if (!(obj is DisplaySprite))
+                    continue;
 
-                if (obj.sprite != null)
-                {
-                    var r = obj.sprite.SearchChild(name);
-                    if (r != null)
-                        return r;
-                }
+                var sprite = (DisplaySprite)obj;
+
+                if (sprite.name == name)
+                    return sprite;
+
+                var r = sprite.SearchChild(name);
+                if (r != null)
+                    return r;
             }
 
             return null;
@@ -142,9 +144,9 @@ namespace Lumenati
 
                 foreach (var obj in currentSprite.DisplayList.Values)
                 {
-                    if (obj.name == name)
+                    if (obj is DisplaySprite && obj.name == name)
                     {
-                        currentSprite = obj.sprite;
+                        currentSprite = (DisplaySprite)obj;
                         found = true;
                         break;
                     }
@@ -161,9 +163,9 @@ namespace Lumenati
         {
             foreach (var child in DisplayList.Values)
             {
-                if (child.sprite != null)
+                if (child is DisplaySprite)
                 {
-                    child.sprite.Reset();
+                    ((DisplaySprite)child).Reset();
                 }
             }
 
@@ -180,8 +182,8 @@ namespace Lumenati
 
             foreach (var child in DisplayList.Values)
             {
-                if (child.sprite != null)
-                    child.sprite.Init();
+                if (child is DisplaySprite)
+                    ((DisplaySprite)child).Init();
             }
         }
 
@@ -208,16 +210,7 @@ namespace Lumenati
                 }
                 else
                 {
-                    obj = new DisplayObject();
-                    obj.shape = Editor.GetRuntimeShapeByCharacterId(placement.CharacterId);
-                    if (obj.shape == null)
-                    {
-                        obj.sprite = Editor.GetRuntimeSpriteByCharacterId(placement.CharacterId);
-
-                        if (obj.sprite == null)
-                            obj.text = Editor.GetRuntimeTextByCharacterId(placement.CharacterId);
-                    }
-
+                    obj = Editor.CharacterDict[placement.CharacterId].Clone();
 
                     if (placement.NameId != -1)
                         obj.name = Editor.lm.Strings[placement.NameId];
@@ -270,12 +263,12 @@ namespace Lumenati
 
             foreach (var obj in DisplayList.Values)
             {
-                if (obj.sprite != null)
-                    obj.sprite.Update();
+                if (obj is DisplaySprite)
+                    ((DisplaySprite)obj).Update();
             }
         }
 
-        public void Render(RenderState state)
+        public override void Render(RenderState state)
         {
             if (!Visible)
                 return;
@@ -286,7 +279,7 @@ namespace Lumenati
 
                 if (obj.hasPos)
                     GL.Translate(obj.pos.X, obj.pos.Y, 0);
-                if (obj.hasMatrix)
+                else if (obj.hasMatrix)
                     GL.MultMatrix(ref obj.matrix);
 
                 var newState = new RenderState();
@@ -304,12 +297,7 @@ namespace Lumenati
 
                 Editor.SetBlendMode(obj.BlendMode);
 
-                if (obj.sprite != null)
-                    obj.sprite.Render(newState);
-                else if (obj.shape != null)
-                    obj.shape.Render();
-                else if (obj.text != null)
-                    obj.text.Render();
+                obj.Render(newState);
 
                 GL.PopMatrix();
             }

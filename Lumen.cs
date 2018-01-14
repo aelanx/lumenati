@@ -401,7 +401,7 @@ namespace Lumenati
 
         public struct DynamicText
         {
-            public int characterId;
+            public int CharacterId;
             public int unk1;
             public int placeholderTextId;
             public int unk2;
@@ -426,7 +426,7 @@ namespace Lumenati
 
             public void Read(InputBuffer f)
             {
-                characterId = f.readInt();
+                CharacterId = f.readInt();
                 unk1 = f.readInt();
                 placeholderTextId = f.readInt();
                 unk2 = f.readInt();
@@ -450,7 +450,7 @@ namespace Lumenati
                 o.writeInt((int)TagType.DynamicText);
                 o.writeInt(16);
 
-                o.writeInt(characterId);
+                o.writeInt(CharacterId);
                 o.writeInt(unk1);
                 o.writeInt(placeholderTextId);
                 o.writeInt(unk2);
