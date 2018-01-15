@@ -478,6 +478,8 @@ namespace Lumenati
                 public int StartFrame;
                 public int Unk1;
 
+                public int KeyframeId;
+
                 public Label() { }
 
                 public Label(InputBuffer f)
@@ -734,7 +736,9 @@ namespace Lumenati
                 {
                     f.skip(0x08);
 
-                    labels.Add(new Label(f));
+                    var label = new Label(f);
+                    label.KeyframeId = i;
+                    labels.Add(label);
                 }
 
                 int totalFrames = numFrames + numKeyframes;

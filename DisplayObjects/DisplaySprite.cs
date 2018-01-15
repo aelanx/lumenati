@@ -6,8 +6,9 @@ namespace Lumenati
     public class DisplaySprite : DisplayObject
     {
         public bool Playing = false;
-        public int CurrentFrame = 0;
         public bool Visible = true;
+        public int CurrentFrame { get; private set; } = 0;
+
 
         //
         SortedDictionary<int, DisplayObject> DisplayList = new SortedDictionary<int, DisplayObject>();
@@ -43,9 +44,6 @@ namespace Lumenati
 
         public void GotoFrame(int frameId)
         {
-            if (frameId == CurrentFrame)
-                return;
-
             // To get an accurate state, we need to move *forward* to the target frame,
             // simulating each along the way. Otherwise, we might miss a placement,
             // deletion, or action, leaving the display list completely borked.
@@ -53,49 +51,51 @@ namespace Lumenati
             // Keyframes contain the full state of their equivalent frame, so we
             // jump back to the nearest keyframe and move forward if frameId < CurrentFrame.
 
-            DisplayList.Clear();
+            int startFrame = 0;
+
             if (Sprite.labels.Count > 0)
             {
                 Lumen.Sprite.Label precedingLabel = null;
-                int precedingLabelId = -1;
 
                 for (int i = 0; i < Sprite.labels.Count; i++)
                 {
                     var label = Sprite.labels[i];
 
                     if (label.StartFrame < frameId)
-                    {
                         precedingLabel = label;
-                        precedingLabelId = i;
-                    }
                     else
-                    {
                         break;
-                    }
                 }
 
                 if (precedingLabel != null)
                 {
-                    handleFrame(Sprite.Keyframes[precedingLabelId]);
-                    CurrentFrame = precedingLabel.StartFrame;
+                    handleFrame(Sprite.Keyframes[precedingLabel.KeyframeId]);
+
+                    startFrame = precedingLabel.StartFrame+1;
+                    for (int i = startFrame; i <= frameId; i++)
+                    {
+                        handleFrame(Sprite.Frames[i]);
+                    }
+                    CurrentFrame = frameId;
+                    return;
                 }
-                else
-                {
-                    CurrentFrame = 0;
-                    handleFrame(Sprite.Frames[0]);
-                }
-            }
-            else
-            {
-                CurrentFrame = 0;
-                handleFrame(Sprite.Frames[0]);
             }
 
-            for (int i = CurrentFrame; i < frameId; i++)
+            //if (startFrame == 0)
+            //    DisplayList.Clear();
+            
+
+            for (int i = startFrame; i <= frameId; i++)
             {
                 handleFrame(Sprite.Frames[i]);
             }
             CurrentFrame = frameId;
+        }
+
+        public void GotoLabel(Lumen.Sprite.Label label)
+        {
+            handleFrame(Sprite.Keyframes[label.KeyframeId]);
+            CurrentFrame = label.StartFrame;
         }
 
         public void GotoLabel(string txt)
@@ -105,8 +105,7 @@ namespace Lumenati
                 var label = Sprite.labels[keyframeId];
                 if (Editor.lm.Strings[label.NameId] == txt)
                 {
-                    handleFrame(Sprite.Keyframes[keyframeId]);
-                    CurrentFrame = label.StartFrame;
+                    GotoLabel(label);
                     return;
                 }
             }
@@ -170,15 +169,13 @@ namespace Lumenati
             }
 
             DisplayList.Clear();
-            Playing = false;
-            CurrentFrame = 0;
-
+            Stop();
             Init();
         }
 
         public void Init()
         {
-            handleFrame(Sprite.Frames[0]);
+            GotoFrame(0);
 
             foreach (var child in DisplayList.Values)
             {
@@ -190,6 +187,17 @@ namespace Lumenati
         public void Stop()
         {
             Playing = false;
+        }
+
+        public void Play()
+        {
+            foreach (var child in DisplayList.Values)
+            {
+                if (child is DisplaySprite)
+                    ((DisplaySprite)child).Play();
+            }
+
+            Playing = true;
         }
 
         void handleFrame(Lumen.Sprite.Frame frame)
@@ -249,16 +257,15 @@ namespace Lumenati
 
         public void Update()
         {
-            if (Playing)
-            {
-                CurrentFrame++;
-                if (CurrentFrame >= Sprite.Frames.Count)
-                {
-                    CurrentFrame = Sprite.Frames.Count - 1;
-                    Stop();
-                }
+            handleFrame(Sprite.Frames[CurrentFrame]);
 
-                handleFrame(Sprite.Frames[CurrentFrame]);
+            if (Playing)
+                CurrentFrame++;
+
+            if (CurrentFrame >= Sprite.Frames.Count)
+            {
+                CurrentFrame = Sprite.Frames.Count - 1;
+                Stop();
             }
 
             foreach (var obj in DisplayList.Values)
@@ -266,6 +273,7 @@ namespace Lumenati
                 if (obj is DisplaySprite)
                     ((DisplaySprite)obj).Update();
             }
+
         }
 
         public override void Render(RenderState state)

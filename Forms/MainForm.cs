@@ -567,10 +567,16 @@ namespace Lumenati
             {
                 if (Editor.SelectedSprite != null)
                 {
-                    if (!Editor.SelectedSprite.Playing && Editor.SelectedSprite.CurrentFrame >= Editor.SelectedSprite.Sprite.Frames.Count-1)
-                        Editor.SelectedSprite.Reset();
-
-                    Editor.SelectedSprite.Playing = !Editor.SelectedSprite.Playing;
+                    if (Editor.SelectedSprite.Playing)
+                    {
+                        Editor.SelectedSprite.Stop();
+                    }
+                    else
+                    {
+                        if (Editor.SelectedSprite.CurrentFrame >= Editor.SelectedSprite.Sprite.Frames.Count - 1)
+                            Editor.SelectedSprite.Reset();
+                        Editor.SelectedSprite.Play();
+                    }
                 }
             }
 

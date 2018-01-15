@@ -27,17 +27,14 @@ namespace Lumenati
 
         public Lumen.BlendMode BlendMode;
 
-        public DisplayObject(LumenEditor editor, int characterId)
+        protected DisplayObject(LumenEditor editor, int characterId)
         {
             Editor = editor;
             CharacterId = characterId;
         }
 
         public virtual void Render(RenderState state) { }
-        public virtual DisplayObject Clone()
-        {
-            return new DisplayObject(Editor, CharacterId);
-        }
+        public virtual DisplayObject Clone() { return null; }
 
     }
 
