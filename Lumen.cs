@@ -399,7 +399,7 @@ namespace Lumenati
             Center = 2
         }
 
-        public struct DynamicText
+        public class DynamicText
         {
             public int CharacterId;
             public int unk1;
@@ -419,7 +419,9 @@ namespace Lumenati
             public int unk11;
             public int unk12;
 
-            public DynamicText(InputBuffer f) : this()
+            public DynamicText() { }
+
+            public DynamicText(InputBuffer f)
             {
                 Read(f);
             }
@@ -851,6 +853,8 @@ namespace Lumenati
         public UnhandledTag unkF00B;
         public Properties2 Defines = new Properties2();
 
+        public Endian Endianness = Endian.Big;
+
         public Lumen() { }
 
         public Lumen(string filename)
@@ -932,6 +936,15 @@ namespace Lumenati
             InputBuffer f = new InputBuffer(filename);
             header.magic = f.readInt();
             header.unk0 = f.readInt();
+
+            if (header.unk0 == 0x10000000)
+            {
+                f.Endianness = Endianness = Endian.Little;
+
+                f.ptr -= 4;
+                header.unk0 = f.readInt();
+            }
+
             header.unk1 = f.readInt();
             header.unk2 = f.readInt();
             header.unk3 = f.readInt();

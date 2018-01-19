@@ -14,8 +14,8 @@ namespace Lumenati
 
     public enum EditorMode
     {
-        Vertex,
-        UV
+        ShapeVertex,
+        ShapeUV
     }
 
     public class LumenEditor
@@ -31,7 +31,7 @@ namespace Lumenati
 
         // mode shit
         public List<SelectedVertex> SelectedVerts = new List<SelectedVertex>();
-        public EditorMode Mode = EditorMode.UV;
+        public EditorMode Mode = EditorMode.ShapeUV;
         public DisplaySprite SelectedSprite;
 
         // short term
@@ -44,8 +44,6 @@ namespace Lumenati
             filePath = Path.GetDirectoryName(filename);
             lm = new Lumen(filename);
             texlist = new Texlist(Path.Combine(filePath, "texlist.lst"));
-
-            //var data = lm.Rebuild(true);
 
             Shader = new LumenShader();
             Shader.EnableAttrib();
@@ -71,10 +69,69 @@ namespace Lumenati
             atlases.Clear();
         }
 
+        void pretendYouDidntSeeThis()
+        {
+            var targetMcCharIds = new List<int>(new int[] { 0x21D, 0x225, 0x229, 0x231, 0x239, 0x241, 0x249, 0x251, 0x259, 0x261 });
+            var textXformIds = new List<int>();
+            foreach (var mc in lm.Sprites)
+            {
+                if (!targetMcCharIds.Contains(mc.CharacterId))
+                    continue;
+
+                foreach (var frame in mc.Frames)
+                {
+                    foreach (var placement in frame.Placements)
+                    {
+                        if (placement.Depth == 0)
+                            placement.ColorMultId = 0x64;
+                    }
+                }
+
+                foreach (var frame in mc.Keyframes)
+                {
+                    foreach (var placement in frame.Placements)
+                    {
+                        if (placement.Depth == 0)
+                            placement.ColorMultId = 0x64;
+
+                        if (placement.Depth == 2 && !textXformIds.Contains(placement.PositionId))
+                            textXformIds.Add(placement.PositionId);
+                    }
+                }
+            }
+
+            foreach (var xformId in textXformIds)
+            {
+                var xform = lm.Transforms[xformId];
+                xform.M42 = 40 * xform.M11;
+                lm.Transforms[xformId] = xform;
+            }
+
+            var targetTextCharIds = new List<int>();
+            foreach (var frame in lm.Sprites[28].Keyframes)
+            {
+                if (frame.Placements.Count > 0)
+                    targetTextCharIds.Add(frame.Placements[0].CharacterId);
+            }
+
+            //foreach (var text in lm.Texts)
+            //{
+            //    if (targetTextCharIds.Contains(text.CharacterId))
+            //        text.alignment = Lumen.TextAlignment.Left;
+            //}
+
+            var data = lm.Rebuild();
+            var outPath = @"C:\s4explore\workspace\content\patch\data\ui\lumen\chara\chara.lm";
+            using (var stream = new FileStream(outPath, FileMode.Create))
+                stream.Write(data, 0, data.Length);
+        }
+
         public void SelectSprite(DisplaySprite sprite)
         {
             SelectedSprite = sprite;
-            SelectedSprite.Reset();
+
+            if (SelectedSprite != null)
+                SelectedSprite.Reset();
         }
 
         public void SetBlendMode(Lumen.BlendMode mode)
@@ -145,12 +202,12 @@ namespace Lumenati
         {
             foreach (var v in SelectedVerts)
             {
-                if (Mode == EditorMode.Vertex)
+                if (Mode == EditorMode.ShapeVertex)
                 {
                     v.graphic.Verts[v.vertId].X += x;
                     v.graphic.Verts[v.vertId].Y += y;
                 }
-                else if (Mode == EditorMode.UV)
+                else if (Mode == EditorMode.ShapeUV)
                 {
                     v.graphic.Verts[v.vertId].U += (x / lm.Atlases[v.graphic.AtlasId].width);
                     v.graphic.Verts[v.vertId].V += (y / lm.Atlases[v.graphic.AtlasId].height);
@@ -199,9 +256,9 @@ namespace Lumenati
 
         public void DrawGraphicHandles(Lumen.Graphic graphic)
         {
-            if (Mode == EditorMode.Vertex)
+            if (Mode == EditorMode.ShapeVertex)
                 DrawGraphicVerts(graphic);
-            else if (Mode == EditorMode.UV)
+            else if (Mode == EditorMode.ShapeUV)
                 DrawGraphicUVs(graphic);
         }
 

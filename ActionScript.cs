@@ -143,6 +143,12 @@ namespace Lumenati
                     if ((byte)opcode >= 0x80)
                         instructionLength = file.readShortLE();
 
+                    switch (opcode)
+                    {
+                        default:
+                        file.ptr += (uint)instructionLength;
+                        break;
+                    }
                     /////
                     /////
                 }

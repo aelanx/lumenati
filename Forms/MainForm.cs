@@ -18,8 +18,10 @@ namespace Lumenati
         RectangleF selectionRect = new Rectangle();
         Vector3 mousePosition = Vector3.Zero;
 
+        Vector3 _viewportPosSprite = Vector3.Zero;
         Vector3 _viewportPosVertex = Vector3.Zero;
         Vector3 _viewportPosUV = Vector3.Zero;
+        float _cameraZoomSprite = 1;
         float _cameraZoomVertex = 1;
         float _cameraZoomUV = 1;
         long lastRenderTime = 0;
@@ -29,19 +31,23 @@ namespace Lumenati
         {
             get
             {
-                if (Editor.Mode == EditorMode.Vertex)
+                if (Editor.SelectedSprite != null)
+                    return _viewportPosSprite;
+                if (Editor.Mode == EditorMode.ShapeVertex)
                     return _viewportPosVertex;
-                else if (Editor.Mode == EditorMode.UV)
+                if (Editor.Mode == EditorMode.ShapeUV)
                     return _viewportPosUV;
-                else
-                    return Vector3.Zero;
+
+                return Vector3.Zero;
             }
 
             set
             {
-                if (Editor.Mode == EditorMode.Vertex)
+                if (Editor.SelectedSprite != null)
+                    _viewportPosSprite = value;
+                else if (Editor.Mode == EditorMode.ShapeVertex)
                     _viewportPosVertex = value;
-                else if (Editor.Mode == EditorMode.UV)
+                else if (Editor.Mode == EditorMode.ShapeUV)
                     _viewportPosUV = value;
             }
         }
@@ -50,19 +56,23 @@ namespace Lumenati
         {
             get
             {
-                if (Editor.Mode == EditorMode.Vertex)
+                if (Editor.SelectedSprite != null)
+                    return _cameraZoomSprite;
+                if (Editor.Mode == EditorMode.ShapeVertex)
                     return _cameraZoomVertex;
-                else if (Editor.Mode == EditorMode.UV)
+                if (Editor.Mode == EditorMode.ShapeUV)
                     return _cameraZoomUV;
-                else
-                    return 1;
+
+                return 1;
             }
 
             set
             {
-                if (Editor.Mode == EditorMode.Vertex)
+                if (Editor.SelectedSprite != null)
+                    _cameraZoomSprite = value;
+                else if (Editor.Mode == EditorMode.ShapeVertex)
                     _cameraZoomVertex = value;
-                else if (Editor.Mode == EditorMode.UV)
+                else if (Editor.Mode == EditorMode.ShapeUV)
                     _cameraZoomUV = value;
             }
         }
@@ -119,6 +129,8 @@ namespace Lumenati
             GL.Translate(ViewportPosition);
             GL.Scale(ViewportZoom, ViewportZoom, 0);
 
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
             if (Editor.SelectedSprite != null)
             {
                 GL.UseProgram(Editor.Shader.ProgramID);
@@ -130,23 +142,23 @@ namespace Lumenati
                 Editor.SelectedSprite.Render(new RenderState());
             }
 
-            //if (SelectedShape != null)
-            //{
-            //    foreach (var graphic in SelectedGraphics)
-            //    {
-            //        Editor.DrawGraphicHandles(graphic);
-            //    }
-            //}
+            if (SelectedShape != null)
+            {
+                foreach (var graphic in SelectedGraphics)
+                {
+                    Editor.DrawGraphicHandles(graphic);
+                }
+            }
 
-            //if (dragging && (Editor.SelectedVerts.Count == 0 || ShiftHeld))
-            //{
-            //    GL.Begin(PrimitiveType.LineLoop);
-            //    GL.Vertex2(selectionRect.X, selectionRect.Y);
-            //    GL.Vertex2(selectionRect.X + Editor.dragPosition.X,  selectionRect.Y);
-            //    GL.Vertex2(selectionRect.X + Editor.dragPosition.X,  selectionRect.Y + Editor.dragPosition.Y);
-            //    GL.Vertex2(selectionRect.X,  selectionRect.Y + Editor.dragPosition.Y);
-            //    GL.End();
-            //}
+            if (dragging && (Editor.SelectedVerts.Count == 0 || ShiftHeld))
+            {
+                GL.Begin(PrimitiveType.LineLoop);
+                GL.Vertex2(selectionRect.X, selectionRect.Y);
+                GL.Vertex2(selectionRect.X + Editor.dragPosition.X, selectionRect.Y);
+                GL.Vertex2(selectionRect.X + Editor.dragPosition.X, selectionRect.Y + Editor.dragPosition.Y);
+                GL.Vertex2(selectionRect.X, selectionRect.Y + Editor.dragPosition.Y);
+                GL.End();
+            }
 
             GL.PopMatrix();
             GL.MatrixMode(MatrixMode.Projection);
@@ -157,12 +169,26 @@ namespace Lumenati
             glControl.SwapBuffers();
         }
 
-        void PopulateShapeTree()
+        void loadFile (string filename)
         {
-            shapeTree.Nodes.Clear();
+            Editor.LoadFile(filename);
+            treeView1.Nodes.Clear();
+
+            var spritesNode = new TreeNode("Sprites");
+            spritesNode.Tag = rootMc;
+            var shapesNode = new TreeNode("Shapes");
+
+            foreach (var mc in Editor.lm.Sprites)
+            {
+                var mcNode = new TreeNode($"characterId 0x{mc.CharacterId:X3}");
+                mcNode.Tag = (DisplaySprite)Editor.CharacterDict[mc.CharacterId];
+
+                spritesNode.Nodes.Add(mcNode);
+            }
+
             foreach (var shape in Editor.lm.Shapes)
             {
-                var shapeNode = new TreeNode($"Shape c{shape.CharacterId}");
+                var shapeNode = new TreeNode($"characterId 0x{shape.CharacterId:X3}");
                 shapeNode.Tag = shape;
 
                 if (shape.Graphics.Length > 1)
@@ -175,21 +201,14 @@ namespace Lumenati
                     }
                 }
 
-                shapeTree.Nodes.Add(shapeNode);
+                shapesNode.Nodes.Add(shapeNode);
             }
-        }
 
-        void loadFile (string filename)
-        {
-            Editor.LoadFile(filename);
-            listView1.Items.Clear();
-            foreach (var mc in Editor.lm.Sprites)
-            {
-                var mcItem = new ListViewItem($"Sprite c{mc.CharacterId:X2}");
-                mcItem.Tag = (DisplaySprite)Editor.CharacterDict[mc.CharacterId];
+            treeView1.Nodes.Add(spritesNode);
+            treeView1.Nodes.Add(shapesNode);
 
-                listView1.Items.Add(mcItem);
-            }
+            spritesNode.Expand();
+            shapesNode.Expand();
 
             // FIXME: oh wow lmao
             rootMc = (DisplaySprite)((DisplaySprite)Editor.CharacterDict[(int)Editor.lm.properties.maxCharacterId]).Clone();
@@ -217,21 +236,11 @@ namespace Lumenati
             //rootMc.GotoLabel("read");
             //rootMc.SearchChild("title_group").Stop();
 
-            Editor.SelectSprite(rootMc);
+            //Editor.SelectSprite(rootMc);
 
             frameLength = 1000f / Editor.lm.properties.framerate;
 
             EnableControls();
-        }
-
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (listView1.SelectedItems.Count == 0)
-                Editor.SelectSprite(rootMc);
-            else
-                Editor.SelectSprite((DisplaySprite)listView1.SelectedItems[0].Tag);
-
-            //PopulateShapeTree();
         }
 
         private void EnableControls()
@@ -263,8 +272,13 @@ namespace Lumenati
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             SelectedGraphics.Clear();
+            Editor.SelectSprite(null);
 
-            if (e.Node.Tag is Lumen.Shape)
+            if (e.Node.Tag is DisplaySprite)
+            {
+                Editor.SelectSprite((DisplaySprite)e.Node.Tag);
+            }
+            else if (e.Node.Tag is Lumen.Shape)
             {
                 SelectedShape = (Lumen.Shape)e.Node.Tag;
                 SelectedGraphics.AddRange(SelectedShape.Graphics);
@@ -354,7 +368,7 @@ namespace Lumenati
                 if (!ShiftHeld)
                     Editor.SelectedVerts.Clear();
 
-                if (Editor.Mode == EditorMode.Vertex)
+                if (Editor.Mode == EditorMode.ShapeVertex)
                 {
                     foreach (var graphic in SelectedShape.Graphics)
                     {
@@ -383,7 +397,7 @@ namespace Lumenati
                             break;
                     }
                 }
-                else if (Editor.Mode == EditorMode.UV)
+                else if (Editor.Mode == EditorMode.ShapeUV)
                 {
                     var graphic = SelectedShape.Graphics[0];
                     for (int vertId = 0; vertId < graphic.Verts.Length; vertId++)
@@ -474,9 +488,9 @@ namespace Lumenati
             const int squareSize = 8;
             var halfSize = squareSize / 2 / ViewportZoom;
 
-            if (Editor.Mode == EditorMode.Vertex)
+            if (Editor.Mode == EditorMode.ShapeVertex)
                 return new RectangleF(vert.X - halfSize, vert.Y - halfSize, squareSize, squareSize);
-            else if (Editor.Mode == EditorMode.UV)
+            else if (Editor.Mode == EditorMode.ShapeUV)
                 return new RectangleF(
                     (vert.U * Editor.lm.Atlases[graphic.AtlasId].width) - halfSize,
                     (vert.V * Editor.lm.Atlases[graphic.AtlasId].height) - halfSize,
@@ -557,10 +571,10 @@ namespace Lumenati
 
             if (e.KeyCode == Keys.Tab)
             {
-                if (Editor.Mode == EditorMode.UV)
-                    Editor.Mode = EditorMode.Vertex;
+                if (Editor.Mode == EditorMode.ShapeUV)
+                    Editor.Mode = EditorMode.ShapeVertex;
                 else
-                    Editor.Mode = EditorMode.UV;
+                    Editor.Mode = EditorMode.ShapeUV;
             }
 
             if (e.KeyCode == Keys.Space)
